@@ -23,3 +23,4 @@
 23.| git merge branch_name
 24.| git checkout -b new_branch_name  #to make new branch and switch to that branch
 25.| git clone url_of_github file_name
+26.| git push  #to push new updates in github
