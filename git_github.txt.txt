@@ -24,3 +24,8 @@
 24.| git checkout -b new_branch_name  #to make new branch and switch to that branch
 25.| git clone url_of_github file_name
 26.| git push  #to push new updates in github
+27.| git log --stat  #it shows commit in short manner
+28.| git log --pretty=oneline  #give one line commits
+29.| git log --pretty=short  #give each commit in 3-4
+30.| git log --since=2.days or 2.months etc.
+31.| git config --global alias.short_form 'long_form_of_command'
