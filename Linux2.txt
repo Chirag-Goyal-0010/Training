@@ -1,63 +1,63 @@
 1. **File Operations:**
 
-   - "ls [options] [directory]": List files and directories in the specified directory.
-   - "pwd": Print the current working directory.
-   - "cd [directory]": Change the current directory.
-   - "touch [filename]": Create an empty file with the given filename.
-   - "cp [options] source destination": Copy files/directories.
-   - "mv [options] source destination": Move or rename files/directories.
-   - "rm [options] file": Remove files or directories (use with caution!).
-   - "mkdir [directory]": Create a new directory.
+   - `ls [options] [directory]`: List files and directories in the specified directory.
+   - `pwd`: Print the current working directory.
+   - `cd [directory]`: Change the current directory.
+   - `touch [filename]`: Create an empty file with the given filename.
+   - `cp [options] source destination`: Copy files/directories.
+   - `mv [options] source destination`: Move or rename files/directories.
+   - `rm [options] file`: Remove files or directories (use with caution!).
+   - `mkdir [directory]`: Create a new directory.
 
 2. **File Viewing/Editing:**
 
-   - "cat [file]": Display the contents of a file.
-   - "more [file]": View the contents of a file one page at a time.
-   - "less [file]": View the contents of a file with backward navigation.
-   - "nano [file]": Edit a file using the Nano text editor.
-   - "vim [file]": Edit a file using the Vim text editor.
+   - `cat [file]`: Display the contents of a file.
+   - `more [file]`: View the contents of a file one page at a time.
+   - `less [file]`: View the contents of a file with backward navigation.
+   - `nano [file]`: Edit a file using the Nano text editor.
+   - `vim [file]`: Edit a file using the Vim text editor.
 
 3. **File Permissions:**
 
-   - "chmod [permissions] [file]": Change file permissions.
-   - "chown [user] [file]": Change file ownership.
-   - "chgrp [group] [file]": Change group ownership of a file.
+   - `chmod [permissions] [file]`: Change file permissions.
+   - `chown [user] [file]`: Change file ownership.
+   - `chgrp [group] [file]`: Change group ownership of a file.
 
 4. **Process Management:**
 
-   - "ps [options]": Display information about running processes.
-   - "top": Monitor system processes in real-time.
-   - "kill [PID]": Terminate a process by its process ID.
-   - "killall [process_name]": Terminate all processes with a specific name.
+   - `ps [options]`: Display information about running processes.
+   - `top`: Monitor system processes in real-time.
+   - `kill [PID]`: Terminate a process by its process ID.
+   - `killall [process_name]`: Terminate all processes with a specific name.
 
 5. **System Information:**
 
-   - "uname [options]": Print system information.
-   - "df [options]": Display disk space usage.
-   - "free [options]": Display memory usage.
-   - "du [options] [directory]": Estimate file and directory space usage.
+   - `uname [options]`: Print system information.
+   - `df [options]`: Display disk space usage.
+   - `free [options]`: Display memory usage.
+   - `du [options] [directory]`: Estimate file and directory space usage.
 
 6. **Networking:**
 
-   - "ifconfig": Display network interface configuration (Note: deprecated on some systems).
-   - "ip [options]": Display or configure network interfaces.
-   - "ping [host]": Send ICMP echo requests to a host.
-   - "traceroute [host]": Print the route packets take to the specified host.
-   - "netstat [options]": Display network statistics and active connections.
+   - `ifconfig`: Display network interface configuration (Note: deprecated on some systems).
+   - `ip [options]`: Display or configure network interfaces.
+   - `ping [host]`: Send ICMP echo requests to a host.
+   - `traceroute [host]`: Print the route packets take to the specified host.
+   - `netstat [options]`: Display network statistics and active connections.
 
 7. **Package Management:**
 
-   - "apt-get [options] [package]": Command-line package handling utility (Ubuntu/Debian).
-   - "yum [options] [package]": Package manager (RHEL/CentOS/Fedora).
-   - "dnf [options] [package]": Next-generation package manager (Fedora/RHEL 8+).
+   - `apt-get [options] [package]`: Command-line package handling utility (Ubuntu/Debian).
+   - `yum [options] [package]`: Package manager (RHEL/CentOS/Fedora).
+   - `dnf [options] [package]`: Next-generation package manager (Fedora/RHEL 8+).
 
 8. **Compressed Archives:**
 
-   - "tar [options] [file.tar] [files/directories]": Create or extract tar archives.
-   - "gzip [options] [file]": Compress files using gzip.
-   - "gunzip [file.gz]": Decompress files compressed with gzip.
-   - "zip [options] [archive.zip] [files/directories]": Create zip archives.
-   - "unzip [options] [archive.zip]": Extract files from zip archives.
+   - `tar [options] [file.tar] [files/directories]`: Create or extract tar archives.
+   - `gzip [options] [file]`: Compress files using gzip.
+   - `gunzip [file.gz]`: Decompress files compressed with gzip.
+   - `zip [options] [archive.zip] [files/directories]`: Create zip archives.
+   - `unzip [options] [archive.zip]`: Extract files from zip archives.
 
 
 
