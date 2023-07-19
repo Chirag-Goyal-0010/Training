@@ -1,160 +1,128 @@
 1. Set global Git username:
-   Syntax - 
-   git config --global user.name chirag
+   Syntax : git config --global user.name chirag
    
 
 2. Set global Git email:
-   Syntax - 
-   git config --global user.email goyalchirag573@gmail.com
+   Syntax : git config --global user.email goyalchirag573@gmail.com
    
 
 3. Initialize an empty Git repository:
-   Syntax - 
-   git init
+   Syntax : git init
    
 
 4. Check the status of your working directory and staged changes:
-   Syntax - 
-   git status
+   Syntax : git status
    
 
 5. Add a specific file to the staging area:
-   Syntax - 
-   git add filename
+   Syntax : git add filename
    
 
 6. Commit changes with a default text editor to add a commit message:
-   Syntax - 
-   git commit
+   Syntax : git commit
    
 
 7. Add all files to the staging area:
-   Syntax - 
-   git add -A
+   Syntax : git add -A
    
 
 8. Commit changes with a custom commit message:
-   Syntax - 
-   git commit -m "message you want to add"
+   Syntax : git commit -m "message you want to add"
    
 
 9. Undo changes in a specific file (restore it to the last commit):
-   Syntax - 
-   git checkout file_name
+   Syntax : git checkout file_name
    
 
 10. Undo changes in all files (force checkout all changed files):
-    Syntax - 
-    git checkout -f
+    Syntax : git checkout -f
     
 
 11. View commit history:
-    Syntax - 
-    git log
+    Syntax : git log
     
 
 12. View the last n commits:
-    Syntax - 
-    git log -p -n
+    Syntax : git log -p -n
     
 
 13. Compare changes between working area and staging area:
-    Syntax - 
-    git diff
+    Syntax : git diff
     
 
 14. Compare changes between staging area and last commit:
-    Syntax - 
-    git diff --staged
+    Syntax : git diff --staged
     
 
 15. Commit all changes in the working directory (including deletions):
-    Syntax - 
-    git commit -a -m "message"
+    Syntax : git commit -a -m "message"
     
 
 16. Unstage a file from the staging area:
-    Syntax - 
-    git rm --cached file_name
+    Syntax : git rm --cached file_name
     
 
 17. Remove a file from the repository and working directory:
-    Syntax - 
-    git rm file_name
+    Syntax : git rm file_name
     
 
 18. Display a more brief status of the repository:
-    Syntax - 
-    git status -s
+    Syntax : git status -s
     
 
 19. Create a `.gitignore` file to specify files to ignore in version control.
 
 20. Create a new branch:
-    Syntax - 
-    git branch branch_name
+    Syntax : git branch branch_name
     
 
 21. List all branches:
-    Syntax - 
-    git branch
+    Syntax : git branch
     
 
 22. Switch to a different branch:
-    Syntax - 
-    git checkout branch_name
+    Syntax : git checkout branch_name
     
 
 23. Merge a specific branch into the current branch:
-    Syntax - 
-    git merge branch_name
+    Syntax : git merge branch_name
     
 
 24. Create a new branch and switch to it:
-    Syntax - 
-    git checkout -b new_branch_name
+    Syntax : git checkout -b new_branch_name
     
 
 25. Clone a remote GitHub repository to your local machine:
-    Syntax - 
-    git clone url_of_github file_name
+    Syntax : git clone url_of_github file_name
     
 
 26. Push new updates to a remote repository:
-    Syntax - 
-    git push
+    Syntax : git push
     
 
 27. View commit history with a short summary of each commit:
-    Syntax - 
-    git log --stat
+    Syntax : git log --stat
     
 
 28. View commit history with each commit displayed in one line:
-    Syntax - 
-    git log --pretty=oneline
+    Syntax : git log --pretty=oneline
     
 
 29. View commit history with each commit displayed in a short format:
-    Syntax - 
-    git log --pretty=short
+    Syntax : git log --pretty=short
     
 
 30. View commits made since a specific date:
-    Syntax - 
-    git log --since=2.days (or 2.months, etc.)
+    Syntax : git log --since=2.days (or 2.months, etc.)
     
 
 31. Create aliases for Git commands:
-    Syntax - 
-    git config --global alias.short_form 'long_form_of_command'
+    Syntax : git config --global alias.short_form 'long_form_of_command'
     
 
 32. Cherry-pick a specific commit to apply it to the current branch:
-    Syntax - 
-    git cherry-pick hash_code
+    Syntax : git cherry-pick hash_code
     
 
 33. Stash changes for later use (an alternative to commit):
-    Syntax - 
-    git stash
+    Syntax : git stash
