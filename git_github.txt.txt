@@ -29,3 +29,5 @@
 29.| git log --pretty=short  #give each commit in 3-4
 30.| git log --since=2.days or 2.months etc.
 31.| git config --global alias.short_form 'long_form_of_command'
+32.| git cherry-pick hash_code  #it only merge particular commit hash code by git log 
+33.| git stash  #it is alternative of commit
