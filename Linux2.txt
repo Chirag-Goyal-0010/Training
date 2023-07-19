@@ -1,0 +1,122 @@
+1. **File Operations:**
+
+   - "ls [options] [directory]": List files and directories in the specified directory.
+   - "pwd": Print the current working directory.
+   - "cd [directory]": Change the current directory.
+   - "touch [filename]": Create an empty file with the given filename.
+   - "cp [options] source destination": Copy files/directories.
+   - "mv [options] source destination": Move or rename files/directories.
+   - "rm [options] file": Remove files or directories (use with caution!).
+   - "mkdir [directory]": Create a new directory.
+
+2. **File Viewing/Editing:**
+
+   - "cat [file]": Display the contents of a file.
+   - "more [file]": View the contents of a file one page at a time.
+   - "less [file]": View the contents of a file with backward navigation.
+   - "nano [file]": Edit a file using the Nano text editor.
+   - "vim [file]": Edit a file using the Vim text editor.
+
+3. **File Permissions:**
+
+   - "chmod [permissions] [file]": Change file permissions.
+   - "chown [user] [file]": Change file ownership.
+   - "chgrp [group] [file]": Change group ownership of a file.
+
+4. **Process Management:**
+
+   - "ps [options]": Display information about running processes.
+   - "top": Monitor system processes in real-time.
+   - "kill [PID]": Terminate a process by its process ID.
+   - "killall [process_name]": Terminate all processes with a specific name.
+
+5. **System Information:**
+
+   - "uname [options]": Print system information.
+   - "df [options]": Display disk space usage.
+   - "free [options]": Display memory usage.
+   - "du [options] [directory]": Estimate file and directory space usage.
+
+6. **Networking:**
+
+   - "ifconfig": Display network interface configuration (Note: deprecated on some systems).
+   - "ip [options]": Display or configure network interfaces.
+   - "ping [host]": Send ICMP echo requests to a host.
+   - "traceroute [host]": Print the route packets take to the specified host.
+   - "netstat [options]": Display network statistics and active connections.
+
+7. **Package Management:**
+
+   - "apt-get [options] [package]": Command-line package handling utility (Ubuntu/Debian).
+   - "yum [options] [package]": Package manager (RHEL/CentOS/Fedora).
+   - "dnf [options] [package]": Next-generation package manager (Fedora/RHEL 8+).
+
+8. **Compressed Archives:**
+
+   - "tar [options] [file.tar] [files/directories]": Create or extract tar archives.
+   - "gzip [options] [file]": Compress files using gzip.
+   - "gunzip [file.gz]": Decompress files compressed with gzip.
+   - "zip [options] [archive.zip] [files/directories]": Create zip archives.
+   - "unzip [options] [archive.zip]": Extract files from zip archives.
+
+
+
+Some more commands
+
+1. `sudo command` - Execute a command with superuser (root) privileges.
+   Syntax: `sudo [command]`
+
+2. `locate command` - Find files and directories based on their names.
+    Syntax: `locate [filename]`
+
+3. `find command` - Search for files and directories in a specified directory hierarchy.
+    Syntax: `find [path] [expression]`
+
+4. `grep command` - Search for a pattern in files or input using regular expressions.
+    Syntax: `grep [options] pattern [file]`
+
+5. `head command` - Display the beginning lines of a file.
+    Syntax: `head [options] [file]`
+
+6. `tail command` - Display the ending lines of a file.
+    Syntax: `tail [options] [file]`
+
+7. `diff command` - Compare files line by line.
+    Syntax: `diff [options] file1 file2`
+
+8. `jobs command` - Display the status of current jobs in the shell.
+    Syntax: `jobs [options]`
+
+9. `wget command` - Download files from the internet.
+    Syntax: `wget [options] [URL]`
+
+10. `history command` - View a list of previously executed commands.
+    Syntax: `history [options]`
+
+11. `man command` - Display the manual page for a given command.
+    Syntax: `man [command]`
+
+12. `echo command` - Display text or variables to the console.
+    Syntax: `echo [options] [text or variables]`
+
+13. `hostname command` - Show or set the system's hostname.
+    Syntax: `hostname [options] [hostname]`
+
+14. `useradd, userdel commands` - Add or remove a user account.
+    Syntax (useradd): `sudo useradd [options] username`
+    Syntax (userdel): `sudo userdel [options] username`
+
+15. `su command` - Switch to another user account or become the superuser.
+    Syntax: `su [options] [username]`
+
+16. `htop command` - Interactive process viewer and system monitor.
+    Syntax: `htop [options]`
+
+17. `ssh` - Connect to a remote server securely.
+    Syntax: `ssh [username]@server_address`
+
+18. `scp` - Securely copy files between systems.
+    Syntax: `scp [file] [username]@remotehost:/path/to/destination/`
+
+19. `passwd` - Change the password for a user.
+    Syntax: `passwd [username]`
