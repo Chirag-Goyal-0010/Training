@@ -72,6 +72,7 @@
 
 19. Create a `.gitignore` file to specify files to ignore in version control.
 
+
 20. Create a new branch:
     Syntax : git branch branch_name
     
@@ -124,5 +125,55 @@
     Syntax : git cherry-pick hash_code
     
 
-33. Stash changes for later use (an alternative to commit):
+33. Command used to temporarily save changes that you have made to your working directory
+    but do not want to commit yet.
     Syntax : git stash
+
+
+34. To list all remote branches in a Git repository:
+    Syntax : git branch -r
+
+
+35. If you want to see more details about the remote branches,
+    such as the last commit message or commit hash, you can use the following command:
+    Syntax : git show-branch --remote
+
+
+{36} View the list of stashed changes
+   Syntax: git stash list
+
+{37} Apply the most recent stash and remove it from the stack
+   Syntax: git stash pop
+
+{38} Apply a specific stash and remove it from the stack (where `stash@{n}` is the stash reference)
+   Syntax: git stash pop stash@{n}
+
+{39} Apply the most recent stash but keep it in the stack
+   Syntax: git stash apply
+
+{40} Apply a specific stash but keep it in the stack (where `stash@{n}` is the stash reference)
+   Syntax: git stash apply stash@{n}
+
+{41} Create a new branch from a specific stash
+   Syntax: git stash branch new_branch_name stash@{n}
+
+{42} Show the changes in the most recent stash without applying them
+   Syntax: git stash show
+
+{43} Show the changes in a specific stash without applying them (where `stash@{n}` is the stash reference)
+   Syntax: git stash show stash@{n}
+
+{44} Show the changes in a stash in a patch format
+   Syntax: git stash show -p stash@{n}
+
+{45} Remove the most recent stash from the stack
+    Syntax: git stash drop
+
+{46} Remove a specific stash from the stack (where `stash@{n}` is the stash reference)
+    Syntax: git stash drop stash@{n}
+
+{47} Apply the most recent stash as a new commit on top of the current branch
+    Syntax: git stash apply --index
+
+{48} Clear all stashed changes (use with caution, as this cannot be undone)
+    Syntax: git stash clear
