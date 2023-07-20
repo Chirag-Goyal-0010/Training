@@ -134,8 +134,7 @@
     Syntax : git branch -r
 
 
-35. If you want to see more details about the remote branches,
-    such as the last commit message or commit hash, you can use the following command:
+35. More details as last commit or commit hash about the remote branches:
     Syntax : git show-branch --remote
 
 
