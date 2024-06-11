@@ -1,0 +1,120 @@
+Advantages of Ruby:
+The code written in Ruby is small, elegant and powerful as it has fewer number of lines of code.
+Ruby allows simple and fast creation of Web application which results in less hard work.
+As Ruby is free of charge that is Ruby is free to copy, use, modify, it allow programmers to make necessary changes as and when required.
+Ruby is a dynamic programming language due to which there is no tough rules on how to built in features and it is very close to spoken languages.
+
+Disadvantages of Ruby:
+Ruby is fairly new and has its own unique coding language which makes it difficult for the programmers to code in it right away but after some practice its easy to use. Many programmers prefer to stick to what they already know and can develop.
+The code written in Ruby is harder to debug, since most of the time it generates at runtime, so it becomes difficult to read while debugging.
+Ruby does not have a plenty of informational resources as compared to other programming languages.
+Ruby is an interpreted scripting language, the scripting languages are usually slower than compiled languages therefore, Ruby is slower than many other languages. 
+
+Maths: Simple mathematical functions can be carried out within the puts statements. Just as we use ‘%d’ or ‘%f’ and ‘&’ in C,we will use ‘#{ } in Ruby to get our work done.
+puts "Alok has #{25+30/6} Rupees in his pocket"
+
+Variables and Names : Variables in ruby are the same as that of any other dynamic programming language. You just don’t need to mention its type and ruby will know its type automatically.
+Example:
+cars = 100
+drivers = 30
+puts "There are #{cars} cars and #{drivers} drivers."
+
+. Getting input(String Only)
+‘gets.chomp’ is used to take input from user.
+age = gets.chomp
+
+Prompting people for numbers
+gets.chomp.to_i is used to get integer input from user.
+gets.chomp.to_f is used to get float(decimal) input from user.
+
+All data types are based on classes because it is a pure Object-Oriented language.
+      There are different data types in Ruby as follows:
+	Numbers :- integers and float
+		According to their size, there are two types of integers, one is Bignum and second is Fixnum. But now both are unified in 		one integer class.
+	Boolean
+	Strings
+	Hashes  :- Ways to create a Hash in Ruby -
+			'Using Hash Literals' And 'Using the Hash Class'
+			1.  Hash_Name = { "key1" => "value1", "key2" => "value2" }
+			2a. empty_hash = Hash.new
+			2b. Hash_Name = Hash["key1", "value1", "key2", "value2"]
+		Accessing Values - puts hash["key1"]  # Output: "value1"
+		Modifying Values - hash["key2"] = "value2" (Add 2nd key value pair)
+		Updating  - hash["key1"] = "new_value"
+		Check if Key Exists: puts hash.key?("key1")   # true or false
+		Check if Value Exists: puts hash.value?("value1")
+	Arrays  :- Syntax -- ary = [ "fred", 10, 3.14, "This is a string", "last element", ]
+		   It can contain all types of data.
+	Symbols :- Symbols are light-weight strings. Used instead of strings because they can take up much less memory.
+			Characteristics :- * Immutability *Uniqueness (:example.object_id == :example.object_id)
+			Creating Symbols :- prefixing a colon (:) to a name. (:age, :city)
+# Ruby program of BEGIN and END 
+puts "This is main body of program"
+
+END
+{ 
+puts "END of the program"
+} 
+
+BEGIN
+{ 
+puts "BEGINNING of the Program"
+} 
+
+(1st begin is printed then main body then end is printed)
+
+Ruby comments   #This is a single line comment
+		=begin
+This is another‎‍
+way of writing 
+comments in a 
+block fashion
+		=end
+
+There are different types of variables in Ruby:
+	1. Local variables :-  A local variable is only accessible within the block of its initialization.
+	2. Instance variables :- Always starts with a @.Instance variables are associated with a specific instance of a class. They are 				 accessible to all instance methods of the class.
+	3. Class variables :- Class variables are shared among all instances of a class. They are used to store information that is 				common to all objects of the class. Start with `@@`.
+	4. Global variables :- Global variables are accessible from anywhere in the Ruby program. They should be used sparingly as they 				can lead to code that is difficult to maintain and debug. Start with a $ symbol.
+
+Ruby provides the 3 types of ranges as follows:
+		1. Ranges as Sequences :- Two operators are used for creating ranges, one is Double Dot (..) operator and the another 			one is Triple Dot (…) operator.
+Code :-- 1a. (1..5).to_a  # => [1, 2, 3, 4, 5]
+1b. Iterating over a range:
+(1..5).each do |number|
+  puts number
+end			
+		2. Ranges as Conditions :- Ranges can also be defined as conditional expressions in looping.They act as flip-flops
+Code :-- 2a. 
+puts i if (i == 3)..(i == 6)
+2b. 
+(1..10).each do |i|
+  puts i if (i == 3)..(i == 6)
+end
+		3. Ranges as Intervals :-  To check that the given value falls within the interval or not.
+Code :-- 3a. 
+range = (10..20)
+puts range.include?(15)  # => true
+puts range.include?(25)  # => false
+ Note - In ruby you cannot create reverse order directly. In order to print a reverse order of given range, always use the reverse() 	method with range operators. 
+		ex- puts ('W'..'Z').to_a.reverse,  print- z,y,x,w 
+
+Ruby Literals
+Any constant value which can be assigned to the variable
+These are following literals in Ruby.
+
+Booleans and nil
+Numbers or Integers :-  Ruby allows any number of ‘_’ in it’s numbers. 100 or 1_00 or 10_0 all same 
+Syntax :
+	decimal(0d or 0D)
+	octal(0o or 0O or 0)
+	hex-decimal(0x or 0X)	ex- puts("hexa-", 0xaa ); 
+	binary(0b or 0B).
+	float(num- or numE1)	ex- puts("Float-", 1.234E1);
+
+Strings :- It is same as python. The string can be expressed with either “” or ”, where “” allows the escaped characters for interpolation.
+Symbols
+Ranges
+Arrays
+Hashes
+Regular Expressions
