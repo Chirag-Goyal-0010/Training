@@ -118,3 +118,119 @@ Ranges
 Arrays
 Hashes
 Regular Expressions
+Syntax :
+	/pattern/ or %r{pattern}
+
+Ruby Directories
+For Ruby, the Dir class and the FileUtils module manages directories and the File class handles the files.
+Creating Ruby directories: Dir.mkdir "name_of_directory"
+Checking Ruby directories: Dir.exist?"name_of_directory"
+Empty or not : Dir.empty?"name_of_directory"
+Create a new directory object: obj=Dir.new("name_of_directory")
+Current directory: Dir.pwd
+Return the home directory: Dir.home
+The path() method of Dir class is used to return the path parameter. 
+	Syntax:	d=Dir.new("name_of_directory")
+		d.path
+The getwd() method of Dir class is used to return the path of the current directory. 
+	Syntax:	Dir.getwd
+The chdir() method used to change working directory. 
+	Syntax:	Dir.chdir("name_of_directory")
+Work like ls :- Dir.entries (list as array)
+The glob() method in Dir class is used to display all the files having a certain matching pattern. 
+	Syntax:	Dir.glob("pattern")
+Removing Ruby Directories : There are various methods in class Dir to remove Ruby Directories like rmdir(), delete() and unlink() 
+Creating nested directory: mkdir_p() method in FileUtils module is used to create a directory and all its parent directories. 
+	Syntax:	FileUtils.mkdir_p 'directory_path'
+Moving files and folders: mv() and move() methods in FileUtils
+	Syntax:	FileUtils.mv("source", "destination")
+Copying files from one directory to another directory: FileUtils.cp("source", "destination")
+Ruby | Operators
+	1. Arithmetic Operators
+		Addition(+)
+		Subtraction(-) 
+		Multiplication(*) 
+		Division(/) 
+		Modulus(%) 
+		Exponent(**)
+	2. Comparison Operators
+		Equal To(==) 
+		Not Equal To(!=) 
+		Greater Than(>) 
+		Less than(<) 
+		Greater Than Equal To(>=) 
+		Less Than Equal To(<=)
+		Combined combination (<=>) :- Operator return 0 when first operand equal to second, return 1 when first operand is 			greater than second operand, and return -1 when first operator is less than second operand.
+		Case Equality Operator(===):- It will test equality in case statement.
+		‘.eql?’ This operator returns true if the receiver and argument have both the same type and equal values.
+		‘Equal?’ This operator Returns true if the receiver and argument have the same object id.
+	3. Logical Operators
+		Logical AND(&&) 
+		Logical OR(||)
+		Logical NOT(!)
+	4. Assignment Operators
+		Simple Assignment (=)
+		Add AND Assignment (+=) 
+		Subtract AND Assignment (-=) 
+		Multiply AND Assignment (*=) 
+		Divide AND Assignment (/=) 
+		Modulus AND Assignment (%=) operator is used for assigning modulo of left operand with right operand and then assigning 			it to variable on the left.
+		Exponent AND Assignment (**=) operator is used for raising power of left operand to right operand and assigning it to 			variable on the left.
+	5. Bitwise Operators
+		Bitwise AND (&) Takes two numbers as operands and does AND on every bit of two numbers. The result of AND is 1 only if 			both bits are 1.
+		Bitwise OR (|) 
+		Bitwise XOR (^) 
+		Left Shift (<<) Takes two numbers, left shifts the bits of the first operand, the second operand decides the 				number of places to shift.
+		Right Shift (>>) 
+		Ones Complement (~) This operator takes a single number and used to perform complement operation of 8-bit.
+	6. Ternary Operator
+		It is a conditional operator which is a shorthand version of the if-else statement.
+		Syntax:	condition ? first_expression : second_expression;
+	7. Range Operators
+		Double Dot (..) 
+		Triple Dot (…)
+	8. defined? Operator
+		The defined? operator in Ruby is used to check if a variable, method, constant, or expression is defined or not. It returns a 			description of the type of the defined item or nil if the item is not defined. This operator is useful for avoiding errors that can 		occur when you try to use a variable or method that hasn't been defined yet.
+		   Syntax:defined? expression_to_be_checked 
+	9. Dot “.” and Double Colon “::” Operators
+		Dot (.) operator is used to access the methods of a class.
+		Double Colon (::) operator is used to access the constants, class methods, and instance methods defined within a class or module to 		anywhere outside the class or module. The important point to remember is that classes and methods may be considered constants in 		Ruby and also prefix the :: Const_name with the expression which returns the appropriate class object. If no prefix expression is 		used then by default the main Object class is used.
+
+
+Operator		Category
+
+[ ] [ ]=		Element reference, element set
+**			Exponentiation
+!, ~, +			Boolean NOT, bitwise complement, unary plus
+*, /, %			Multiplication, division, modulo (remainder)
++, –			Addition (or concatenation), subtraction
+< <, > >		Bitwise shift-left (or append), bitwise shift-right
+&			Bitwise AND
+|, ^			Bitwise OR, bitwise XOR
+>, >=, <, <=		Ordering
+------------------------------------------------------------------
+<=>, ==, ===,
+ !=, =~, !~ 		Equality, pattern matching, comparison
+------------------------------------------------------------------
+&&			Logical AND
+||			Boolean OR
+| |			Logical OR
+.., …=			Range creation and Boolean flip-flops
+?, :			Conditional
+modifier-rescue		Exception-handling modifier
+=, +=, -=, etc.		Assignment
+defined?		Test variable definition and type
+not			Boolean NOT (low precedence)
+or, and			Boolean OR, Boolean AND
+------------------------------------------------------------------
+modifier-if,
+ modifier-unless, 
+modifier-while, 
+modifier-until		Conditional and loop modifiers
+------------------------------------------------------------------
+begin/end		blocks
+
+Ruby | unless Statement and unless Modifier
+Unless statement is used when we require to print false condition
+unless Modifier: You can also use unless as a modifier to modify an expression. When you use unless as a modifier the left-hand side behaves as a 	then condition and right-hand side behaves as a test condition.
+	Syntax:	`statement unless condition`
