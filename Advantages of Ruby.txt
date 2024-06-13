@@ -49,18 +49,18 @@ All data types are based on classes because it is a pure Object-Oriented languag
 			Characteristics :- * Immutability *Uniqueness (:example.object_id == :example.object_id)
 			Creating Symbols :- prefixing a colon (:) to a name. (:age, :city)
 # Ruby program of BEGIN and END 
-puts "This is main body of program"
+If there is more than one BEGIN statement in a program, they are executed in the order If there is more than one END
+statement, they are executed in the reverse of the order.
 
+puts "This is main body of program"
 END
 { 
 puts "END of the program"
 } 
-
 BEGIN
 { 
 puts "BEGINNING of the Program"
 } 
-
 (1st begin is printed then main body then end is printed)
 
 Ruby comments   #This is a single line comment
@@ -70,7 +70,7 @@ way of writing
 comments in a 
 block fashion
 		=end
-
+-----------------------------------------------------------------------------------------------------------------------------
 There are different types of variables in Ruby:
 	1. Local variables :-  A local variable is only accessible within the block of its initialization.
 	2. Instance variables :- Always starts with a @.Instance variables are associated with a specific instance of a class. They are 				 accessible to all instance methods of the class.
@@ -234,3 +234,58 @@ Ruby | unless Statement and unless Modifier
 Unless statement is used when we require to print false condition
 unless Modifier: You can also use unless as a modifier to modify an expression. When you use unless as a modifier the left-hand side behaves as a 	then condition and right-hand side behaves as a test condition.
 	Syntax:	`statement unless condition`
+____________________________________________________________________________________________________________________________________________________
+$ Decision-Making Statements in Ruby: 
+	# if statement
+	# if-else statement
+	# if – elsif ladder
+	# Ternary statement
+
+$ The loops in Ruby are :
+	# while loop
+	# for loop
+	 Syntax -
+	for a in 1..5 do
+	   puts "Hello World"
+	  end
+----------------------------
+	# do..while loop
+	 Syntax - 
+	loop do
+	 puts "GeeksforGeeks"
+	 val = '7'
+	 # using boolean expressions
+	 if val == '7'
+	  break
+	 end
+	# ending of ruby do..while loop 
+	end
+--------------------------------
+	# until loop
+	 Syntax-
+	until conditional [do]
+	 # code to be executed
+	end
+$ Ruby | Case Statement
+	Syntax:
+case expression
+when expression 1
+  # your code
+when expression 2
+  # your code
+.
+.
+else
+  # your code
+end
+Important Points:
+	@ In case statement the when statement can contain multiple values and range.
+	@ You can use case statement in method call. Like method call, a case statement will always return a single object.
+$ Ruby | Control Flow Alteration
+	# break statement :- Used to exit a loop
+		Ex - break if x > 3
+	# next statement :- Used to jump to the next iterator
+	# redo statement :- Used to restart the current iteration (i value remain same)
+	# retry statement :- To repeat the whole loop iteration from the start 
+	# return statement :- Used to exit from a method
+	# throw/catch statement :- Throw is used to break the current loop and transfer the control outside of the catch 			block.
