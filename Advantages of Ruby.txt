@@ -289,3 +289,55 @@ $ Ruby | Control Flow Alteration
 	# retry statement :- To repeat the whole loop iteration from the start 
 	# return statement :- Used to exit from a method
 	# throw/catch statement :- Throw is used to break the current loop and transfer the control outside of the catch 			block.
+$ File Handling in Ruby
+Common modes for File Handling
+“r” : Read-only mode for a file.
+“r+” : Read-Write mode for a file.
+“w” : Write-only mode for a file.
+“w+” : Read-Write mode for a file.
+“a” : Write-only mode, if file exists it will append the data otherwise a new file will be created.
+“a+” : Read and Write mode, if file exists it will append the data otherwise a new file will be created.
+	Syntax :
+fileobject = File.new("filename.txt", "mode")
+fileobject.syswrite("Text to write into the file")
+fileobject.close()
+	There are three different methods to read a file.
+1. fileobject.sysread(20) – Return only the first 20 characters from that file
+2. fileobject.read – Return the entire content from a file
+3. fileobject.readlines – Return the values as an array of lines
+--------------------------------------------------------------------
+# Rename the file name 
+puts File.rename("sample.txt", "newSample.txt")  
+  
+# Delete the existing file 
+puts File.delete("sample1.txt")     
+  
+# Checking the old filename is existing or not  
+puts File.file?("sample.txt") 
+  
+# Checking the renamed file is exiting or not 
+puts File.file?("newSample.txt") 
+  
+# Checking the file have read permission 
+puts File.readable?("newSample.txt") 
+  
+ # Checking the file have write permission 
+puts File.writable?("newSample.txt")       
+_____________________________________________________________________________________________________________________________
+$ Ruby | Methods
+ Name of the method should be in lowercase.
+	Syntax: 
+		def method_name
+		# Code
+		end
+Passing parameters to methods:
+	def method_name(var1, var2, var3)
+	# Code
+	end
+Variable Number of Parameters: When the user doesn’t know the number of parameters to be passed while defining the method.
+	Syntax:
+		def method_name(*variable_name)
+		# Code
+		end
+	# Here variable_name is array of all aurgumets passed
+Return statement in Methods: Returns one or more values.
