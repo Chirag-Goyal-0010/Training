@@ -1,19 +1,19 @@
-Advantages of Ruby:
+  Advantages of Ruby:
 The code written in Ruby is small, elegant and powerful as it has fewer number of lines of code.
 Ruby allows simple and fast creation of Web application which results in less hard work.
 As Ruby is free of charge that is Ruby is free to copy, use, modify, it allow programmers to make necessary changes as and when required.
 Ruby is a dynamic programming language due to which there is no tough rules on how to built in features and it is very close to spoken languages.
 
-Disadvantages of Ruby:
+  Disadvantages of Ruby:
 Ruby is fairly new and has its own unique coding language which makes it difficult for the programmers to code in it right away but after some practice its easy to use. Many programmers prefer to stick to what they already know and can develop.
 The code written in Ruby is harder to debug, since most of the time it generates at runtime, so it becomes difficult to read while debugging.
 Ruby does not have a plenty of informational resources as compared to other programming languages.
 Ruby is an interpreted scripting language, the scripting languages are usually slower than compiled languages therefore, Ruby is slower than many other languages. 
 
-Maths: Simple mathematical functions can be carried out within the puts statements. Just as we use ‘%d’ or ‘%f’ and ‘&’ in C,we will use ‘#{ } in Ruby to get our work done.
+  Maths: Simple mathematical functions can be carried out within the puts statements. Just as we use ‘%d’ or ‘%f’ and ‘&’ in C,we will use ‘#{ } in Ruby to get our work done.
 puts "Alok has #{25+30/6} Rupees in his pocket"
 
-Variables and Names : Variables in ruby are the same as that of any other dynamic programming language. You just don’t need to mention its type and ruby will know its type automatically.
+  Variables and Names : Variables in ruby are the same as that of any other dynamic programming language. You just don’t need to mention its type and ruby will know its type automatically.
 Example:
 cars = 100
 drivers = 30
@@ -23,7 +23,7 @@ puts "There are #{cars} cars and #{drivers} drivers."
 ‘gets.chomp’ is used to take input from user.
 age = gets.chomp
 
-Prompting people for numbers
+  Prompting people for numbers
 gets.chomp.to_i is used to get integer input from user.
 gets.chomp.to_f is used to get float(decimal) input from user.
 
@@ -48,19 +48,19 @@ All data types are based on classes because it is a pure Object-Oriented languag
 	Symbols :- Symbols are light-weight strings. Used instead of strings because they can take up much less memory.
 			Characteristics :- * Immutability *Uniqueness (:example.object_id == :example.object_id)
 			Creating Symbols :- prefixing a colon (:) to a name. (:age, :city)
-# Ruby program of BEGIN and END 
-puts "This is main body of program"
+  # Ruby program of BEGIN and END 
+If there is more than one BEGIN statement in a program, they are executed in the order If there is more than one END
+statement, they are executed in the reverse of the order.
 
+puts "This is main body of program"
 END
 { 
 puts "END of the program"
 } 
-
 BEGIN
 { 
 puts "BEGINNING of the Program"
 } 
-
 (1st begin is printed then main body then end is printed)
 
 Ruby comments   #This is a single line comment
@@ -70,7 +70,7 @@ way of writing
 comments in a 
 block fashion
 		=end
-
+-----------------------------------------------------------------------------------------------------------------------------
 There are different types of variables in Ruby:
 	1. Local variables :-  A local variable is only accessible within the block of its initialization.
 	2. Instance variables :- Always starts with a @.Instance variables are associated with a specific instance of a class. They are 				 accessible to all instance methods of the class.
@@ -79,7 +79,361 @@ There are different types of variables in Ruby:
 
 Ruby provides the 3 types of ranges as follows:
 		1. Ranges as Sequences :- Two operators are used for creating ranges, one is Double Dot (..) operator and the another 			one is Triple Dot (…) operator.
-		2. Ranges as Conditions :- Ranges can also be defined as conditional expressions in looping.
+Code :-- 1a. (1..5).to_a  # => [1, 2, 3, 4, 5]
+1b. Iterating over a range:
+(1..5).each do |number|
+  puts number
+end			
+		2. Ranges as Conditions :- Ranges can also be defined as conditional expressions in looping.They act as flip-flops
+Code :-- 2a. 
+puts i if (i == 3)..(i == 6)
+2b. 
+(1..10).each do |i|
+  puts i if (i == 3)..(i == 6)
+end
 		3. Ranges as Intervals :-  To check that the given value falls within the interval or not.
+Code :-- 3a. 
+range = (10..20)
+puts range.include?(15)  # => true
+puts range.include?(25)  # => false
  Note - In ruby you cannot create reverse order directly. In order to print a reverse order of given range, always use the reverse() 	method with range operators. 
 		ex- puts ('W'..'Z').to_a.reverse,  print- z,y,x,w 
+
+Ruby Literals
+Any constant value which can be assigned to the variable
+These are following literals in Ruby.
+
+Booleans and nil
+Numbers or Integers :-  Ruby allows any number of ‘_’ in it’s numbers. 100 or 1_00 or 10_0 all same 
+Syntax :
+	decimal(0d or 0D)
+	octal(0o or 0O or 0)
+	hex-decimal(0x or 0X)	ex- puts("hexa-", 0xaa ); 
+	binary(0b or 0B).
+	float(num- or numE1)	ex- puts("Float-", 1.234E1);
+
+Strings :- It is same as python. The string can be expressed with either “” or ”, where “” allows the escaped characters for interpolation.
+Symbols
+Ranges
+Arrays
+Hashes
+Regular Expressions
+Syntax :
+	/pattern/ or %r{pattern}
+
+Ruby Directories
+For Ruby, the Dir class and the FileUtils module manages directories and the File class handles the files.
+Creating Ruby directories: Dir.mkdir "name_of_directory"
+Checking Ruby directories: Dir.exist?"name_of_directory"
+Empty or not : Dir.empty?"name_of_directory"
+Create a new directory object: obj=Dir.new("name_of_directory")
+Current directory: Dir.pwd
+Return the home directory: Dir.home
+The path() method of Dir class is used to return the path parameter. 
+	Syntax:	d=Dir.new("name_of_directory")
+		d.path
+The getwd() method of Dir class is used to return the path of the current directory. 
+	Syntax:	Dir.getwd
+The chdir() method used to change working directory. 
+	Syntax:	Dir.chdir("name_of_directory")
+Work like ls :- Dir.entries (list as array)
+The glob() method in Dir class is used to display all the files having a certain matching pattern. 
+	Syntax:	Dir.glob("pattern")
+Removing Ruby Directories : There are various methods in class Dir to remove Ruby Directories like rmdir(), delete() and unlink() 
+Creating nested directory: mkdir_p() method in FileUtils module is used to create a directory and all its parent directories. 
+	Syntax:	FileUtils.mkdir_p 'directory_path'
+Moving files and folders: mv() and move() methods in FileUtils
+	Syntax:	FileUtils.mv("source", "destination")
+Copying files from one directory to another directory: FileUtils.cp("source", "destination")
+Ruby | Operators
+	1. Arithmetic Operators
+		Addition(+)
+		Subtraction(-) 
+		Multiplication(*) 
+		Division(/) 
+		Modulus(%) 
+		Exponent(**)
+	2. Comparison Operators
+		Equal To(==) 
+		Not Equal To(!=) 
+		Greater Than(>) 
+		Less than(<) 
+		Greater Than Equal To(>=) 
+		Less Than Equal To(<=)
+		Combined combination (<=>) :- Operator return 0 when first operand equal to second, return 1 when first operand is 			greater than second operand, and return -1 when first operator is less than second operand.
+		Case Equality Operator(===):- It will test equality in case statement.
+		‘.eql?’ This operator returns true if the receiver and argument have both the same type and equal values.
+		‘Equal?’ This operator Returns true if the receiver and argument have the same object id.
+	3. Logical Operators
+		Logical AND(&&) 
+		Logical OR(||)
+		Logical NOT(!)
+	4. Assignment Operators
+		Simple Assignment (=)
+		Add AND Assignment (+=) 
+		Subtract AND Assignment (-=) 
+		Multiply AND Assignment (*=) 
+		Divide AND Assignment (/=) 
+		Modulus AND Assignment (%=) operator is used for assigning modulo of left operand with right operand and then assigning 			it to variable on the left.
+		Exponent AND Assignment (**=) operator is used for raising power of left operand to right operand and assigning it to 			variable on the left.
+	5. Bitwise Operators
+		Bitwise AND (&) Takes two numbers as operands and does AND on every bit of two numbers. The result of AND is 1 only if 			both bits are 1.
+		Bitwise OR (|) 
+		Bitwise XOR (^) 
+		Left Shift (<<) Takes two numbers, left shifts the bits of the first operand, the second operand decides the 				number of places to shift.
+		Right Shift (>>) 
+		Ones Complement (~) This operator takes a single number and used to perform complement operation of 8-bit.
+	6. Ternary Operator
+		It is a conditional operator which is a shorthand version of the if-else statement.
+		Syntax:	condition ? first_expression : second_expression;
+	7. Range Operators
+		Double Dot (..) 
+		Triple Dot (…)
+	8. defined? Operator
+		The defined? operator in Ruby is used to check if a variable, method, constant, or expression is defined or not. It returns a 			description of the type of the defined item or nil if the item is not defined. This operator is useful for avoiding errors that can 		occur when you try to use a variable or method that hasn't been defined yet.
+		   Syntax:defined? expression_to_be_checked 
+	9. Dot “.” and Double Colon “::” Operators
+		Dot (.) operator is used to access the methods of a class.
+		Double Colon (::) operator is used to access the constants, class methods, and instance methods defined within a class or module to 		anywhere outside the class or module. The important point to remember is that classes and methods may be considered constants in 		Ruby and also prefix the :: Const_name with the expression which returns the appropriate class object. If no prefix expression is 		used then by default the main Object class is used.
+
+
+Operator		Category
+
+[ ] [ ]=		Element reference, element set
+**			Exponentiation
+!, ~, +			Boolean NOT, bitwise complement, unary plus
+*, /, %			Multiplication, division, modulo (remainder)
++, –			Addition (or concatenation), subtraction
+< <, > >		Bitwise shift-left (or append), bitwise shift-right
+&			Bitwise AND
+|, ^			Bitwise OR, bitwise XOR
+>, >=, <, <=		Ordering
+------------------------------------------------------------------
+<=>, ==, ===,
+ !=, =~, !~ 		Equality, pattern matching, comparison
+------------------------------------------------------------------
+&&			Logical AND
+||			Boolean OR
+| |			Logical OR
+.., …=			Range creation and Boolean flip-flops
+?, :			Conditional
+modifier-rescue		Exception-handling modifier
+=, +=, -=, etc.		Assignment
+defined?		Test variable definition and type
+not			Boolean NOT (low precedence)
+or, and			Boolean OR, Boolean AND
+------------------------------------------------------------------
+modifier-if,
+ modifier-unless, 
+modifier-while, 
+modifier-until		Conditional and loop modifiers
+------------------------------------------------------------------
+begin/end		blocks
+
+Ruby | unless Statement and unless Modifier
+Unless statement is used when we require to print false condition
+unless Modifier: You can also use unless as a modifier to modify an expression. When you use unless as a modifier the left-hand side behaves as a 	then condition and right-hand side behaves as a test condition.
+	Syntax:	`statement unless condition`
+_______________________________________________________________________________________________________________________________________________
+$ Decision-Making Statements in Ruby: 
+	# if statement
+	# if-else statement
+	# if – elsif ladder
+	# Ternary statement
+
+$ The loops in Ruby are :
+	# while loop
+	# for loop
+	 Syntax -
+	for a in 1..5 do
+	   puts "Hello World"
+	  end
+----------------------------
+	# do..while loop
+	 Syntax - 
+	loop do
+	 puts "GeeksforGeeks"
+	 val = '7'
+	 # using boolean expressions
+	 if val == '7'
+	  break
+	 end
+	# ending of ruby do..while loop 
+	end
+--------------------------------
+	# until loop
+	 Syntax-
+	until conditional [do]
+	 # code to be executed
+	end
+$ Ruby | Case Statement
+	Syntax:
+case expression
+when expression 1
+  # your code
+when expression 2
+  # your code
+.
+.
+else
+  # your code
+end
+Important Points:
+	@ In case statement the when statement can contain multiple values and range.
+	@ You can use case statement in method call. Like method call, a case statement will always return a single object.
+$ Ruby | Control Flow Alteration
+	# break statement :- Used to exit a loop
+		Ex - break if x > 3
+	# next statement :- Used to jump to the next iterator
+	# redo statement :- Used to restart the current iteration (i value remain same)
+	# retry statement :- To repeat the whole loop iteration from the start 
+	# return statement :- Used to exit from a method
+	# throw/catch statement :- Throw is used to break the current loop and transfer the control outside of the catch 			block.
+$ File Handling in Ruby
+Common modes for File Handling
+“r” : Read-only mode for a file.
+“r+” : Read-Write mode for a file.
+“w” : Write-only mode for a file.
+“w+” : Read-Write mode for a file.
+“a” : Write-only mode, if file exists it will append the data otherwise a new file will be created.
+“a+” : Read and Write mode, if file exists it will append the data otherwise a new file will be created.
+	Syntax :
+fileobject = File.new("filename.txt", "mode")
+fileobject.syswrite("Text to write into the file")
+fileobject.close()
+	There are three different methods to read a file.
+1. fileobject.sysread(20) – Return only the first 20 characters from that file
+2. fileobject.read – Return the entire content from a file
+3. fileobject.readlines – Return the values as an array of lines
+--------------------------------------------------------------------
+# Rename the file name 
+puts File.rename("sample.txt", "newSample.txt")  
+  
+# Delete the existing file 
+puts File.delete("sample1.txt")     
+  
+# Checking the old filename is existing or not  
+puts File.file?("sample.txt") 
+  
+# Checking the renamed file is exiting or not 
+puts File.file?("newSample.txt") 
+  
+# Checking the file have read permission 
+puts File.readable?("newSample.txt") 
+  
+ # Checking the file have write permission 
+puts File.writable?("newSample.txt")       
+_____________________________________________________________________________________________________________________________
+$ Ruby | Methods
+ Name of the method should be in lowercase.
+	Syntax: 
+		def method_name
+		# Code
+		end
+Passing parameters to methods:
+	def method_name(var1, var2, var3)
+	# Code
+	end
+Variable Number of Parameters: When the user doesn’t know the number of parameters to be passed while defining the method.
+	Syntax:
+		def method_name(*variable_name)
+		# Code
+		end
+	# Here variable_name is array of all aurgumets passed
+Return statement in Methods: Returns one or more values.
+
+$ Method Visibility in Ruby
+Method visibility depends on the three types of access modifiers of a class in Ruby:
+	# Public Access Modifier
+	# Protected Access Modifier :-  Accessible within the defining class and its subclasses
+	# Private Access Modifier :- Accessible only within the context of the defining class.
+Recursion in Ruby sometimes produces “SystemStackError: stack level too deep” when a large number is used as an input(This number varies with the system).
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Ruby Hook Methods
+Modules in Ruby :- Sets of code that could be written once and be used at multiple places. Usually, hook methods are used to access them and make changes in them. 
+Important Ruby Hook Methods :- 
+	1. Included :- Called when a module is included in another module or class. ( #include<stdio.h> )
+	2. Prepended :- Methods defined in the prepended module will be called before any methods defined in the class or other modules that might be included.
+	4. Extended :- 
+	3. Inherited
+	5. method_missing
+_________________________________________________________________________________________________________________________________________________________________
+Ruby | Regular Expressions
+	Helps us to find particular patterns inside a string.
+   Syntax:
+# finding the word 'hi'
+"Hi there, i am using gfg" =~ /hi/	
+
+	There are different short expressions for specifying character ranges :
+\w is equivalent to [0-9a-zA-Z_]
+\d is the same as [0-9]
+\s matches white space
+\W anything that’s not in [0-9a-zA-Z_]
+\D anything that’s not a number
+\S anything that’s not a space
+The dot character . matches all but does not match new line. If you want to search . character, then you have to escape it.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Ruby Search and Replace
+	--> The sub & sub! replaces the first occurrence of the pattern and gsub & gsub! replaces all occurrences.
+	--> sub! and gsub! modify the string on which they are called whereas the sub and gsub returns a new string, leaving the original unmodified.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Ruby | String Basics
+Creating Strings :- {' str1 = "GFG" ',' str2 = String.new "GeeksforGeeks" ' }
+Access String Elements: :-  
+	accessing the specified substring - puts str["Geeks"]
+	passing index - puts str[-3]
+	passing Two arguments (returns characters starting from the 1st index and the 2nd index is the number of characters ) - puts str[14, 10]
+	using range operators - puts str[14 .. 17] 
+String Replication :- puts str * 7 ( using * )
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Ruby | Hashes Basics
+Arrays always use an integer value for indexing whereas hashes use the object.
+Fetching hash values :- put the required key within the square bracket [].  => " puts geeks_hash1['DS'] "
+Modifying hashes in Ruby : 
+	# modifying hash values 
+	   geeks_hash1["DS"] = 4
+	   geeks_hash1["Java"] = 5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

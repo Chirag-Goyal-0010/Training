@@ -1,19 +1,19 @@
-Advantages of Ruby:
+  Advantages of Ruby:
 The code written in Ruby is small, elegant and powerful as it has fewer number of lines of code.
 Ruby allows simple and fast creation of Web application which results in less hard work.
 As Ruby is free of charge that is Ruby is free to copy, use, modify, it allow programmers to make necessary changes as and when required.
 Ruby is a dynamic programming language due to which there is no tough rules on how to built in features and it is very close to spoken languages.
 
-Disadvantages of Ruby:
+  Disadvantages of Ruby:
 Ruby is fairly new and has its own unique coding language which makes it difficult for the programmers to code in it right away but after some practice its easy to use. Many programmers prefer to stick to what they already know and can develop.
 The code written in Ruby is harder to debug, since most of the time it generates at runtime, so it becomes difficult to read while debugging.
 Ruby does not have a plenty of informational resources as compared to other programming languages.
 Ruby is an interpreted scripting language, the scripting languages are usually slower than compiled languages therefore, Ruby is slower than many other languages. 
 
-Maths: Simple mathematical functions can be carried out within the puts statements. Just as we use ‘%d’ or ‘%f’ and ‘&’ in C,we will use ‘#{ } in Ruby to get our work done.
+  Maths: Simple mathematical functions can be carried out within the puts statements. Just as we use ‘%d’ or ‘%f’ and ‘&’ in C,we will use ‘#{ } in Ruby to get our work done.
 puts "Alok has #{25+30/6} Rupees in his pocket"
 
-Variables and Names : Variables in ruby are the same as that of any other dynamic programming language. You just don’t need to mention its type and ruby will know its type automatically.
+  Variables and Names : Variables in ruby are the same as that of any other dynamic programming language. You just don’t need to mention its type and ruby will know its type automatically.
 Example:
 cars = 100
 drivers = 30
@@ -23,7 +23,7 @@ puts "There are #{cars} cars and #{drivers} drivers."
 ‘gets.chomp’ is used to take input from user.
 age = gets.chomp
 
-Prompting people for numbers
+  Prompting people for numbers
 gets.chomp.to_i is used to get integer input from user.
 gets.chomp.to_f is used to get float(decimal) input from user.
 
@@ -48,7 +48,7 @@ All data types are based on classes because it is a pure Object-Oriented languag
 	Symbols :- Symbols are light-weight strings. Used instead of strings because they can take up much less memory.
 			Characteristics :- * Immutability *Uniqueness (:example.object_id == :example.object_id)
 			Creating Symbols :- prefixing a colon (:) to a name. (:age, :city)
-# Ruby program of BEGIN and END 
+  # Ruby program of BEGIN and END 
 If there is more than one BEGIN statement in a program, they are executed in the order If there is more than one END
 statement, they are executed in the reverse of the order.
 
@@ -234,7 +234,7 @@ Ruby | unless Statement and unless Modifier
 Unless statement is used when we require to print false condition
 unless Modifier: You can also use unless as a modifier to modify an expression. When you use unless as a modifier the left-hand side behaves as a 	then condition and right-hand side behaves as a test condition.
 	Syntax:	`statement unless condition`
-____________________________________________________________________________________________________________________________________________________
+_______________________________________________________________________________________________________________________________________________
 $ Decision-Making Statements in Ruby: 
 	# if statement
 	# if-else statement
@@ -341,3 +341,99 @@ Variable Number of Parameters: When the user doesn’t know the number of parame
 		end
 	# Here variable_name is array of all aurgumets passed
 Return statement in Methods: Returns one or more values.
+
+$ Method Visibility in Ruby
+Method visibility depends on the three types of access modifiers of a class in Ruby:
+	# Public Access Modifier
+	# Protected Access Modifier :-  Accessible within the defining class and its subclasses
+	# Private Access Modifier :- Accessible only within the context of the defining class.
+Recursion in Ruby sometimes produces “SystemStackError: stack level too deep” when a large number is used as an input(This number varies with the system).
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Ruby Hook Methods
+Modules in Ruby :- Sets of code that could be written once and be used at multiple places. Usually, hook methods are used to access them and make changes in them. 
+Important Ruby Hook Methods :- 
+	1. Included :- Called when a module is included in another module or class. ( #include<stdio.h> )
+	2. Prepended :- Methods defined in the prepended module will be called before any methods defined in the class or other modules that might be included.
+	4. Extended :- 
+	3. Inherited
+	5. method_missing
+_________________________________________________________________________________________________________________________________________________________________
+Ruby | Regular Expressions
+	Helps us to find particular patterns inside a string.
+   Syntax:
+# finding the word 'hi'
+"Hi there, i am using gfg" =~ /hi/	
+
+	There are different short expressions for specifying character ranges :
+\w is equivalent to [0-9a-zA-Z_]
+\d is the same as [0-9]
+\s matches white space
+\W anything that’s not in [0-9a-zA-Z_]
+\D anything that’s not a number
+\S anything that’s not a space
+The dot character . matches all but does not match new line. If you want to search . character, then you have to escape it.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Ruby Search and Replace
+	--> The sub & sub! replaces the first occurrence of the pattern and gsub & gsub! replaces all occurrences.
+	--> sub! and gsub! modify the string on which they are called whereas the sub and gsub returns a new string, leaving the original unmodified.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Ruby | String Basics
+Creating Strings :- {' str1 = "GFG" ',' str2 = String.new "GeeksforGeeks" ' }
+Access String Elements: :-  
+	accessing the specified substring - puts str["Geeks"]
+	passing index - puts str[-3]
+	passing Two arguments (returns characters starting from the 1st index and the 2nd index is the number of characters ) - puts str[14, 10]
+	using range operators - puts str[14 .. 17] 
+String Replication :- puts str * 7 ( using * )
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Ruby | Hashes Basics
+Arrays always use an integer value for indexing whereas hashes use the object.
+Fetching hash values :- put the required key within the square bracket [].  => " puts geeks_hash1['DS'] "
+Modifying hashes in Ruby : 
+	# modifying hash values 
+	   geeks_hash1["DS"] = 4
+	   geeks_hash1["Java"] = 5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
