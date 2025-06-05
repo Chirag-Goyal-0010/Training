@@ -263,4 +263,132 @@ include Authenticatable, except: [:index, :show]
 include Searchable do |config|
   config.search_fields = [:title, :content]
 end
-``` 
+```
+
+# Controller Syntax
+
+This document provides a quick reference for common syntax used in Rails controllers.
+
+## Defining a Controller
+
+Controllers are Ruby classes that inherit from `ApplicationController`.
+
+```ruby
+class ArticlesController < ApplicationController
+  # Actions go here
+end
+```
+
+## Defining Actions
+
+Actions are public methods within a controller.
+
+```ruby
+class ArticlesController < ApplicationController
+  def index
+    # Code to handle the index action (e.g., list all articles)
+  end
+
+  def show
+    # Code to handle the show action (e.g., display a specific article)
+  end
+
+  def new
+    # Code to handle the new action (e.g., prepare a new article for creation)
+  end
+
+  def create
+    # Code to handle the create action (e.g., save a new article to the database)
+  end
+
+  def edit
+    # Code to handle the edit action (e.g., prepare an existing article for update)
+  end
+
+  def update
+    # Code to handle the update action (e.g., save updates to an existing article)
+  end
+
+  def destroy
+    # Code to handle the destroy action (e.g., delete an article)
+  end
+end
+```
+
+## Accessing Parameters
+
+Parameters sent with requests are available in the `params` hash.
+
+```ruby
+# Accessing a specific parameter
+article_id = params[:id]
+
+# Permitting strong parameters for mass assignment
+def article_params
+  params.require(:article).permit(:title, :body, :author_id)
+end
+```
+
+## Rendering Views
+
+By default, Rails renders a view template that matches the action name (e.g., `index.html.erb` for the `index` action). You can explicitly render a different view or content.
+
+```ruby
+# Render a specific view template
+render "articles/show"
+
+# Render a different template in the same controller's view directory
+render :edit
+
+# Render text
+render plain: "Hello, World!"
+
+# Render JSON
+render json: @article
+
+# Render nothing with a status code
+head :no_content
+```
+
+## Redirecting
+
+You can redirect the user to a different URL or action.
+
+```ruby
+# Redirect to a specific URL
+redirect_to "http://www.example.com"
+
+# Redirect to a specific action within the same controller
+redirect_to action: :index
+
+# Redirect to a specific controller and action
+redirect_to controller: "articles", action: "show", id: @article.id
+
+# Redirect to a model instance (Rails infers the show path)
+redirect_to @article
+```
+
+## Using Before/After Callbacks
+
+Callbacks allow you to run methods before, after, or around controller actions.
+
+```ruby
+class ArticlesController < ApplicationController
+  before_action :set_article, only: [:show, :edit, :update, :destroy]
+  after_action :log_article_access, only: [:show]
+
+  # ... actions ...
+
+  private
+
+  def set_article
+    @article = Article.find(params[:id])
+  end
+
+  def log_article_access
+    Rails.logger.info "Article #{@article.id} was accessed."
+  end
+end
+```
+
+This covers some of the fundamental syntax for Rails controllers. Let me know when you're ready to move on to the next topic! 
