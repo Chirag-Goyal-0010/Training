@@ -1,4 +1,4 @@
-# Complete Ruby on Rails Cheatsheet
+# Ruby on Rails Code Examples
 
 ## 🔹 1. Core Ruby
 
@@ -131,22 +131,7 @@ bundle install
 bundle update
 ```
 
-## 🔹 2. Introduction to Rails
-
-### What is Ruby on Rails?
-Rails is a web application framework written in Ruby that follows the MVC pattern and emphasizes convention over configuration.
-
-### MVC Architecture
-- Model: Handles data and business logic
-- View: Handles presentation and user interface
-- Controller: Handles user requests and coordinates between Model and View
-
-### Convention over Configuration
-Rails follows sensible defaults and conventions to reduce configuration:
-- File naming conventions
-- Directory structure
-- Database table naming
-- RESTful routing
+## 🔹 2. Rails Basics
 
 ### Rails Directory Structure
 ```
