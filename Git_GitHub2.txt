@@ -1,0 +1,178 @@
+1. Set global Git username:
+   Syntax : git config --global user.name chirag
+   
+
+2. Set global Git email:
+   Syntax : git config --global user.email goyalchirag573@gmail.com
+   
+
+3. Initialize an empty Git repository:
+   Syntax : git init
+   
+
+4. Check the status of your working directory and staged changes:
+   Syntax : git status
+   
+
+5. Add a specific file to the staging area:
+   Syntax : git add filename
+   
+
+6. Commit changes with a default text editor to add a commit message:
+   Syntax : git commit
+   
+
+7. Add all files to the staging area:
+   Syntax : git add -A
+   
+
+8. Commit changes with a custom commit message:
+   Syntax : git commit -m "message you want to add"
+   
+
+9. Undo changes in a specific file (restore it to the last commit):
+   Syntax : git checkout file_name
+   
+
+10. Undo changes in all files (force checkout all changed files):
+    Syntax : git checkout -f
+    
+
+11. View commit history:
+    Syntax : git log
+    
+
+12. View the last n commits:
+    Syntax : git log -p -n
+    
+
+13. Compare changes between working area and staging area:
+    Syntax : git diff
+    
+
+14. Compare changes between staging area and last commit:
+    Syntax : git diff --staged
+    
+
+15. Commit all changes in the working directory (including deletions):
+    Syntax : git commit -a -m "message"
+    
+
+16. Unstage a file from the staging area:
+    Syntax : git rm --cached file_name
+    
+
+17. Remove a file from the repository and working directory:
+    Syntax : git rm file_name
+    
+
+18. Display a more brief status of the repository:
+    Syntax : git status -s
+    
+
+19. Create a `.gitignore` file to specify files to ignore in version control.
+
+
+20. Create a new branch:
+    Syntax : git branch branch_name
+    
+
+21. List all branches:
+    Syntax : git branch
+    
+
+22. Switch to a different branch:
+    Syntax : git checkout branch_name
+    
+
+23. Merge a specific branch into the current branch:
+    Syntax : git merge branch_name
+    
+
+24. Create a new branch and switch to it:
+    Syntax : git checkout -b new_branch_name
+    
+
+25. Clone a remote GitHub repository to your local machine:
+    Syntax : git clone url_of_github file_name
+    
+
+26. Push new updates to a remote repository:
+    Syntax : git push
+    
+
+27. View commit history with a short summary of each commit:
+    Syntax : git log --stat
+    
+
+28. View commit history with each commit displayed in one line:
+    Syntax : git log --pretty=oneline
+    
+
+29. View commit history with each commit displayed in a short format:
+    Syntax : git log --pretty=short
+    
+
+30. View commits made since a specific date:
+    Syntax : git log --since=2.days (or 2.months, etc.)
+    
+
+31. Create aliases for Git commands:
+    Syntax : git config --global alias.short_form 'long_form_of_command'
+    
+
+32. Cherry-pick a specific commit to apply it to the current branch:
+    Syntax : git cherry-pick hash_code
+    
+
+33. Command used to temporarily save changes that you have made to your working directory
+    but do not want to commit yet.
+    Syntax : git stash
+
+
+34. To list all remote branches in a Git repository:
+    Syntax : git branch -r
+
+
+35. More details as last commit or commit hash about the remote branches:
+    Syntax : git show-branch --remote
+
+
+{36} View the list of stashed changes
+   Syntax: git stash list
+
+{37} Apply the most recent stash and remove it from the stack
+   Syntax: git stash pop
+
+{38} Apply a specific stash and remove it from the stack (where `stash@{n}` is the stash reference)
+   Syntax: git stash pop stash@{n}
+
+{39} Apply the most recent stash but keep it in the stack
+   Syntax: git stash apply
+
+{40} Apply a specific stash but keep it in the stack (where `stash@{n}` is the stash reference)
+   Syntax: git stash apply stash@{n}
+
+{41} Create a new branch from a specific stash
+   Syntax: git stash branch new_branch_name stash@{n}
+
+{42} Show the changes in the most recent stash without applying them
+   Syntax: git stash show
+
+{43} Show the changes in a specific stash without applying them (where `stash@{n}` is the stash reference)
+   Syntax: git stash show stash@{n}
+
+{44} Show the changes in a stash in a patch format
+   Syntax: git stash show -p stash@{n}
+
+{45} Remove the most recent stash from the stack
+    Syntax: git stash drop
+
+{46} Remove a specific stash from the stack (where `stash@{n}` is the stash reference)
+    Syntax: git stash drop stash@{n}
+
+{47} Apply the most recent stash as a new commit on top of the current branch
+    Syntax: git stash apply --index
+
+{48} Clear all stashed changes (use with caution, as this cannot be undone)
+    Syntax: git stash clear
