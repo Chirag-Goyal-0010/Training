@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 
 	"github.com/yourusername/flights-project/models"
@@ -156,4 +157,92 @@ func (fc *FlightController) DeleteFlight(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Flight deleted successfully"})
+}
+
+func (fc *FlightController) SearchFlights(c *gin.Context) {
+	// Get search parameters from query string
+	departureCity := c.Query("departure_city")
+	arrivalCity := c.Query("arrival_city")
+	departureDate := c.Query("departure_date")
+	status := c.Query("status")
+
+	// Build the base query
+	query := `
+		SELECT f.id, f.aircraft_id, f.departure_airport_id, f.arrival_airport_id,
+			   f.departure_time, f.arrival_time, f.distance, f.status,
+			   a1.name as departure_airport, a2.name as arrival_airport,
+			   a1.city as departure_city, a2.city as arrival_city
+		FROM flights f
+		JOIN airports a1 ON f.departure_airport_id = a1.airport_id
+		JOIN airports a2 ON f.arrival_airport_id = a2.airport_id
+		WHERE 1=1
+	`
+	args := []interface{}{}
+	argCount := 1
+
+	// Add filters based on provided parameters
+	if departureCity != "" {
+		query += fmt.Sprintf(" AND a1.city ILIKE $%d", argCount)
+		args = append(args, "%"+departureCity+"%")
+		argCount++
+	}
+
+	if arrivalCity != "" {
+		query += fmt.Sprintf(" AND a2.city ILIKE $%d", argCount)
+		args = append(args, "%"+arrivalCity+"%")
+		argCount++
+	}
+
+	if departureDate != "" {
+		query += fmt.Sprintf(" AND DATE(f.departure_time) = $%d", argCount)
+		args = append(args, departureDate)
+		argCount++
+	}
+
+	if status != "" {
+		query += fmt.Sprintf(" AND f.status = $%d", argCount)
+		args = append(args, status)
+		argCount++
+	}
+
+	query += " ORDER BY f.departure_time"
+
+	// Execute the query
+	rows, err := fc.DB.Query(query, args...)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error searching flights"})
+		return
+	}
+	defer rows.Close()
+
+	var flights []gin.H
+	for rows.Next() {
+		var flight models.Flight
+		var departureAirport, arrivalAirport, departureCity, arrivalCity string
+		err := rows.Scan(
+			&flight.ID, &flight.AircraftID, &flight.DepartureAirportID,
+			&flight.ArrivalAirportID, &flight.DepartureTime, &flight.ArrivalTime,
+			&flight.Distance, &flight.Status, &departureAirport, &arrivalAirport,
+			&departureCity, &arrivalCity,
+		)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error scanning flights"})
+			return
+		}
+
+		flights = append(flights, gin.H{
+			"id":                flight.ID,
+			"aircraft_id":       flight.AircraftID,
+			"departure_airport": departureAirport,
+			"arrival_airport":   arrivalAirport,
+			"departure_city":    departureCity,
+			"arrival_city":      arrivalCity,
+			"departure_time":    flight.DepartureTime,
+			"arrival_time":      flight.ArrivalTime,
+			"distance":          flight.Distance,
+			"status":            flight.Status,
+		})
+	}
+
+	c.JSON(http.StatusOK, flights)
 }

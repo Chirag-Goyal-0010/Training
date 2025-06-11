@@ -16,6 +16,7 @@ func SetupRoutes(router *gin.Engine, db *sql.DB) {
 
 	// Public routes
 	router.POST("/api/auth/register", authController.Register)
+	router.POST("/api/auth/register/admin", authController.RegisterAdmin)
 	router.POST("/api/auth/login", authController.Login)
 
 	// Protected routes
@@ -24,6 +25,7 @@ func SetupRoutes(router *gin.Engine, db *sql.DB) {
 	{
 		// Flight routes
 		authorized.GET("/flights", flightController.GetFlights)
+		authorized.GET("/flights/search", flightController.SearchFlights)
 
 		// Admin only routes
 		admin := authorized.Group("/admin")
