@@ -1,134 +1,145 @@
 package controllers
 
 import (
-	"database/sql"
 	"net/http"
-	"os"
-	"time"
 
-	"github.com/yourusername/flights-project/models"
+	"flights-project/middleware"
+	"flights-project/models"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
+// AuthController handles authentication-related requests
 type AuthController struct {
-	DB *sql.DB
+	db *gorm.DB
 }
 
-func NewAuthController(db *sql.DB) *AuthController {
-	return &AuthController{DB: db}
+// NewAuthController creates a new auth controller
+func NewAuthController(db *gorm.DB) *AuthController {
+	return &AuthController{db: db}
 }
 
+// RegisterRequest represents the request body for user registration
+type RegisterRequest struct {
+	Username string `json:"username" validate:"required,min=3,max=50"`
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=6"`
+}
+
+// Register handles user registration
 func (ac *AuthController) Register(c *gin.Context) {
-	var user models.User
-	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	var request RegisterRequest
+	if !middleware.GetValidatedModel(c, &request) {
 		return
 	}
 
-	// Force role to be "customer" for public registration
-	user.Role = "customer"
-
-	// Hash password
-	if err := user.HashPassword(); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error hashing password"})
+	// Check if user already exists
+	var existingUser models.User
+	if err := ac.db.Where("email = ?", request.Email).First(&existingUser).Error; err == nil {
+		c.Error(middleware.BadRequestError("Email already registered", nil))
 		return
 	}
 
-	// Insert user into database
-	query := `INSERT INTO users (username, password, role, created_at, updated_at) 
-			  VALUES ($1, $2, $3, $4, $5) RETURNING id`
-	err := ac.DB.QueryRow(query, user.Username, user.Password, user.Role, time.Now(), time.Now()).Scan(&user.ID)
+	// Hash the password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating user"})
+		c.Error(middleware.InternalServerError("Failed to hash password", err))
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "User created successfully", "user_id": user.ID})
-}
-
-// Add a new admin registration endpoint that requires a secret key
-func (ac *AuthController) RegisterAdmin(c *gin.Context) {
-	// Check for admin registration key
-	adminKey := c.GetHeader("X-Admin-Key")
-	if adminKey != os.Getenv("ADMIN_REGISTRATION_KEY") {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Invalid admin registration key"})
-		return
+	// Create the user
+	user := models.User{
+		Username: request.Username,
+		Email:    request.Email,
+		Password: string(hashedPassword),
+		Role:     "user", // Default role
 	}
 
-	var user models.User
-	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	// Force role to be "admin" for admin registration
-	user.Role = "admin"
-
-	// Hash password
-	if err := user.HashPassword(); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error hashing password"})
-		return
-	}
-
-	// Insert user into database
-	query := `INSERT INTO users (username, password, role, created_at, updated_at) 
-			  VALUES ($1, $2, $3, $4, $5) RETURNING id`
-	err := ac.DB.QueryRow(query, user.Username, user.Password, user.Role, time.Now(), time.Now()).Scan(&user.ID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating admin user"})
-		return
-	}
-
-	c.JSON(http.StatusCreated, gin.H{"message": "Admin user created successfully", "user_id": user.ID})
-}
-
-func (ac *AuthController) Login(c *gin.Context) {
-	var loginData struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
-	}
-
-	if err := c.ShouldBindJSON(&loginData); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	// Get user from database
-	var user models.User
-	query := `SELECT id, username, password, role FROM users WHERE username = $1`
-	err := ac.DB.QueryRow(query, loginData.Username).Scan(&user.ID, &user.Username, &user.Password, &user.Role)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
-		return
-	}
-
-	// Check password
-	if err := user.CheckPassword(loginData.Password); err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+	if err := ac.db.Create(&user).Error; err != nil {
+		c.Error(middleware.InternalServerError("Failed to create user", err))
 		return
 	}
 
 	// Generate JWT token
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user_id": user.ID,
-		"role":    user.Role,
-		"exp":     time.Now().Add(time.Hour * 24).Unix(),
-	})
-
-	tokenString, err := token.SignedString([]byte("your-secret-key"))
+	token, err := middleware.GenerateToken(user.ID, user.Email, user.Role, user.Username)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error generating token"})
+		c.Error(middleware.InternalServerError("Failed to generate token", err))
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"success": true,
+		"token":   token,
+		"user": gin.H{
+			"id":       user.ID,
+			"username": user.Username,
+			"email":    user.Email,
+			"role":     user.Role,
+		},
+	})
+}
+
+// LoginRequest represents the request body for user login
+type LoginRequest struct {
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required"`
+}
+
+// Login handles user login
+func (ac *AuthController) Login(c *gin.Context) {
+	var request LoginRequest
+	if !middleware.GetValidatedModel(c, &request) {
+		return
+	}
+
+	// Find the user
+	var user models.User
+	if err := ac.db.Where("email = ?", request.Email).First(&user).Error; err != nil {
+		c.Error(middleware.UnauthorizedError("Invalid email or password", nil))
+		return
+	}
+
+	// Verify password
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(request.Password)); err != nil {
+		c.Error(middleware.UnauthorizedError("Invalid email or password", nil))
+		return
+	}
+
+	// Generate JWT token
+	token, err := middleware.GenerateToken(user.ID, user.Email, user.Role, user.Username)
+	if err != nil {
+		c.Error(middleware.InternalServerError("Failed to generate token", err))
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"token": tokenString,
+		"success": true,
+		"token":   token,
 		"user": gin.H{
 			"id":       user.ID,
 			"username": user.Username,
+			"email":    user.Email,
 			"role":     user.Role,
+		},
+	})
+}
+
+// GetProfile returns the current user's profile
+func (ac *AuthController) GetProfile(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	email, _ := c.Get("email")
+	role, _ := c.Get("role")
+	username, _ := c.Get("username")
+
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"user": gin.H{
+			"id":       userID,
+			"username": username,
+			"email":    email,
+			"role":     role,
 		},
 	})
 }

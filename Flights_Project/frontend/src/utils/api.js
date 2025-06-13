@@ -49,9 +49,9 @@ api.interceptors.response.use(
 // Auth API calls
 export const authAPI = {
   login: (username, password) =>
-    api.post('/auth/login', { username, password }),
-  register: (username, password, role) =>
-    api.post('/auth/register', { username, password, role }),
+    api.post('/login', { username, password }),
+  register: (username, email, password, role) =>
+    api.post('/register', { username, email, password, role }),
   verify: () => api.get('/auth/verify'),
 };
 
@@ -62,6 +62,17 @@ export const flightAPI = {
   createFlight: (flightData) => api.post('/admin/flights', flightData),
   updateFlight: (id, flightData) => api.put(`/admin/flights/${id}`, flightData),
   deleteFlight: (id) => api.delete(`/admin/flights/${id}`),
+  searchFlights: (searchCriteria) => api.post('/flights/search', searchCriteria),
+};
+
+// Booking API calls
+export const bookingAPI = {
+  createBooking: (bookingData) => api.post('/bookings', bookingData),
+  getUserBookings: () => api.get('/bookings'),
+  getBooking: (id) => api.get(`/bookings/${id}`),
+  cancelBooking: (id) => api.delete(`/bookings/${id}`),
+  getAllBookings: () => api.get('/admin/bookings'),
+  updateBookingStatus: (id, statusData) => api.put(`/admin/bookings/${id}/status`, statusData),
 };
 
 export default api; 

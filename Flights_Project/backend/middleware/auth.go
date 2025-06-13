@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/golang-jwt/jwt"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
@@ -28,7 +28,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		tokenString := parts[1]
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			// Replace with your secret key
+			// Replace with your actual secret key
 			return []byte("your-secret-key"), nil
 		})
 
@@ -46,17 +46,18 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// Add user info to context
-		c.Set("user_id", claims["user_id"])
-		c.Set("role", claims["role"])
+		// Set user information in context
+		c.Set("user_id", uint(claims["user_id"].(float64)))
+		c.Set("is_admin", claims["is_admin"].(bool))
+
 		c.Next()
 	}
 }
 
-func AdminMiddleware() gin.HandlerFunc {
+func AdminOnly() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		role, exists := c.Get("role")
-		if !exists || role != "admin" {
+		isAdmin, exists := c.Get("is_admin")
+		if !exists || !isAdmin.(bool) {
 			c.JSON(http.StatusForbidden, gin.H{"error": "Admin access required"})
 			c.Abort()
 			return

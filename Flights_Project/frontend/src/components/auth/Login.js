@@ -11,40 +11,42 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+// Define validation schema
+const schema = yup.object().shape({
+  username: yup.string().required('Username is required'),
+  password: yup.string().required('Password is required').min(6, 'Password must be at least 6 characters'),
+});
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
-  const [formData, setFormData] = useState({
-    username: '',
-    password: '',
+  const { login, loadingAuth } = useAuth();
+
+  const { register, handleSubmit, formState: { errors } } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      username: '',
+      password: '',
+    },
   });
+
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     setError('');
-    setLoading(true);
 
     try {
-      const result = await login(formData.username, formData.password);
+      const result = await login(data.username, data.password);
       if (result.success) {
-        navigate('/user/dashboard');
+        navigate('/dashboard');
       } else {
-        setError(result.error);
+        setError(result.error || 'Login failed. Please check your credentials.');
       }
     } catch (err) {
-      setError('An error occurred during login');
-    } finally {
-      setLoading(false);
+      setError('An unexpected error occurred during login.');
     }
   };
 
@@ -61,13 +63,14 @@ const Login = () => {
           </Alert>
         )}
 
-        <Box component="form" onSubmit={handleSubmit}>
+        <Box component="form" onSubmit={handleSubmit(onSubmit)}>
           <TextField
             fullWidth
             label="Username"
             name="username"
-            value={formData.username}
-            onChange={handleChange}
+            {...register('username')}
+            error={!!errors.username}
+            helperText={errors.username?.message}
             margin="normal"
             required
             autoFocus
@@ -77,8 +80,9 @@ const Login = () => {
             label="Password"
             name="password"
             type="password"
-            value={formData.password}
-            onChange={handleChange}
+            {...register('password')}
+            error={!!errors.password}
+            helperText={errors.password?.message}
             margin="normal"
             required
           />
@@ -88,10 +92,10 @@ const Login = () => {
             variant="contained"
             color="primary"
             size="large"
-            disabled={loading}
+            disabled={loadingAuth}
             sx={{ mt: 3 }}
           >
-            {loading ? 'Logging in...' : 'Login'}
+            {loadingAuth ? 'Logging in...' : 'Login'}
           </Button>
         </Box>
 

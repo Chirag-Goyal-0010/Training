@@ -1,30 +1,57 @@
 package config
 
 import (
-	"database/sql"
+	"fmt"
 	"os"
 
-	_ "github.com/lib/pq"
+	"flights-project/models"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-func InitDB() (*sql.DB, error) {
-	// Get database connection string from environment variable
-	dbURL := os.Getenv("DATABASE_URL")
-	if dbURL == "" {
-		// Default connection string with the correct password
-		dbURL = "postgres://postgres:Chirag123@localhost:5432/flightdb?sslmode=disable"
+func InitDB() (*gorm.DB, error) {
+	// Get database connection details from environment variables
+	dbHost := os.Getenv("DB_HOST")
+	if dbHost == "" {
+		dbHost = "localhost"
+	}
+	dbPort := os.Getenv("DB_PORT")
+	if dbPort == "" {
+		dbPort = "5432"
+	}
+	dbUser := os.Getenv("DB_USER")
+	if dbUser == "" {
+		dbUser = "postgres"
+	}
+	dbPassword := os.Getenv("DB_PASSWORD")
+	if dbPassword == "" {
+		dbPassword = "Chirag123" // Your pgAdmin 4 password
+	}
+	dbName := os.Getenv("DB_NAME")
+	if dbName == "" {
+		dbName = "flightdb"
 	}
 
-	// Open database connection
-	db, err := sql.Open("postgres", dbURL)
+	// Create connection string
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		dbHost, dbPort, dbUser, dbPassword, dbName)
+
+	// Connect to database
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to connect to database: %v", err)
 	}
 
-	// Test the connection
-	err = db.Ping()
+	// Auto migrate the schema
+	err = db.AutoMigrate(
+		&models.User{},
+		&models.Flight{},
+		&models.Booking{},
+		&models.Seat{},
+	)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to migrate database: %v", err)
 	}
 
 	return db, nil
