@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import API_BASE_URL from '../api';
 
 const TITLES = ['Mr', 'Mrs', 'Ms', 'Dr', 'Master', 'Miss'];
 const NATIONALITIES = ['India', 'Other'];
@@ -96,7 +97,7 @@ const FlightList = ({ searchParams }) => {
   const fetchFlights = async () => {
     try {
       const token = localStorage.getItem('token');
-      let url = 'http://localhost:8080/api/flights';
+      let url = `${API_BASE_URL}/flights`;
       
       // Add search parameters if they exist
       if (searchParams) {
@@ -147,7 +148,7 @@ const FlightList = ({ searchParams }) => {
       }
 
       await axios.post(
-        'http://localhost:8080/api/bookings',
+        `${API_BASE_URL}/bookings`,
         {
           flight_id: selectedFlight.ID,
           seats: seats,

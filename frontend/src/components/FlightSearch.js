@@ -23,6 +23,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import axios from 'axios';
 import { format } from 'date-fns';
+import API_BASE_URL from '../api';
 
 const FlightSearch = ({ onSearch }) => {
   const [tripType, setTripType] = useState('oneWay'); // 'oneWay' or 'roundTrip'
@@ -40,7 +41,7 @@ const FlightSearch = ({ onSearch }) => {
     const fetchLocations = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:8080/api/locations', {
+        const response = await axios.get(`${API_BASE_URL}/locations`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

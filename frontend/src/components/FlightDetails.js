@@ -13,6 +13,7 @@ import {
   ListItemText,
 } from '@mui/material';
 import { format } from 'date-fns';
+import API_BASE_URL from '../api';
 
 function FlightDetails() {
   const { id } = useParams();
@@ -30,7 +31,7 @@ function FlightDetails() {
           return;
         }
 
-        const response = await axios.get(`http://localhost:8080/api/admin/flights/${id}`, {
+        const response = await axios.get(`${API_BASE_URL}/admin/flights/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setFlight(response.data.data);

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../api';
 import {
   Container,
   Paper,
@@ -70,7 +71,7 @@ function AdminDashboard() {
     const fetchLocations = async () => {
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:8080/api/locations', {
+        const response = await axios.get(`${API_BASE_URL}/locations`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setOriginOptions(response.data.origins);
@@ -85,7 +86,7 @@ function AdminDashboard() {
   const fetchFlights = async () => {
     try {
       const token = localStorage.getItem('token');
-      let url = 'http://localhost:8080/api/flights';
+      let url = `${API_BASE_URL}/flights`;
       const query = new URLSearchParams();
 
       if (showAllFlights) {
@@ -192,7 +193,7 @@ function AdminDashboard() {
 
       console.log('Sending flight data:', flightData);
 
-      await axios.post('http://localhost:8080/api/admin/flights', flightData, {
+      await axios.post(`${API_BASE_URL}/admin/flights`, flightData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSuccess('Flight added successfully');
@@ -216,7 +217,7 @@ function AdminDashboard() {
   const handleDeleteFlight = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:8080/api/admin/flights/${id}`, {
+      await axios.delete(`${API_BASE_URL}/admin/flights/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSuccess('Flight deleted successfully');
