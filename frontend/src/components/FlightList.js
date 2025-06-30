@@ -16,7 +16,7 @@ import {
   Typography,
   TextField,
   Alert,
-  FormControl, InputLabel, Select, MenuItem, Box
+  FormControl, InputLabel, Select, MenuItem, Box, Checkbox, FormControlLabel
 } from '@mui/material';
 import axios from 'axios';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -38,10 +38,14 @@ const FlightList = ({ searchParams }) => {
   const [travellerDetails, setTravellerDetails] = useState([
     { title: '', first_name: '', last_name: '', dob: null, nationality: 'India' }
   ]);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     fetchFlights();
-  }, [searchParams]);
+  }, [searchParams, page, showAll]);
 
   useEffect(() => {
     if (selectedFlight) {
@@ -98,23 +102,29 @@ const FlightList = ({ searchParams }) => {
     try {
       const token = localStorage.getItem('token');
       let url = `${API_BASE_URL}/flights`;
-      
-      // Add search parameters if they exist
+      const query = new URLSearchParams();
       if (searchParams) {
-        const query = new URLSearchParams();
         if (searchParams.from) query.append('origin', searchParams.from);
         if (searchParams.to) query.append('destination', searchParams.to);
         if (searchParams.departureDate) query.append('departure_time', searchParams.departureDate);
         if (searchParams.travelClass) query.append('travel_class', searchParams.travelClass);
+      }
+      if (!showAll) {
+        query.append('page', page);
+        query.append('limit', limit);
+      } else {
+        query.append('allFlights', 'true');
+      }
+      if (Array.from(query).length > 0) {
         url = `${url}?${query.toString()}`;
       }
-
       const response = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       setFlights(response.data.data);
+      setTotal(response.data.meta?.total || 0);
     } catch (error) {
       console.error('Error fetching flights:', error);
     }
@@ -203,11 +213,18 @@ const FlightList = ({ searchParams }) => {
     }
   };
 
+  const totalPages = Math.ceil(total / limit);
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
         Available Flights
       </Typography>
+      <FormControlLabel
+        control={<Checkbox checked={showAll} onChange={e => { setShowAll(e.target.checked); setPage(1); }} />}
+        label="Show All Flights"
+        sx={{ mb: 2 }}
+      />
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -257,6 +274,27 @@ const FlightList = ({ searchParams }) => {
           </TableBody>
         </Table>
       </TableContainer>
+      {!showAll && (
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 2 }}>
+          <Button onClick={() => setPage(page - 1)} disabled={page === 1} sx={{ mr: 2 }}>Previous</Button>
+          <span>Page</span>
+          <TextField
+            type="number"
+            value={page}
+            onChange={e => {
+              let val = parseInt(e.target.value) || 1;
+              if (val < 1) val = 1;
+              if (val > totalPages) val = totalPages;
+              setPage(val);
+            }}
+            size="small"
+            sx={{ width: 60, mx: 1 }}
+            inputProps={{ min: 1, max: totalPages }}
+          />
+          <span>of {totalPages}</span>
+          <Button onClick={() => setPage(page + 1)} disabled={page === totalPages} sx={{ ml: 2 }}>Next</Button>
+        </Box>
+      )}
 
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Book Flight</DialogTitle>

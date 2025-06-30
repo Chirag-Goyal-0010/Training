@@ -65,7 +65,10 @@ function App() {
             path="/flights"
             element={
               <PrivateRoute>
-                <FlightList searchParams={searchParams} />
+                <>
+                  <FlightSearch onSearch={handleSearch} />
+                  <FlightList searchParams={searchParams} />
+                </>
               </PrivateRoute>
             }
           />

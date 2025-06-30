@@ -42,26 +42,29 @@ type Flight struct {
 }
 
 type Traveller struct {
-	ID          uint      `gorm:"primaryKey" json:"id"`
-	BookingID   uint      `json:"booking_id"`
-	Title       string    `json:"title" binding:"required"`
-	FirstName   string    `json:"first_name" binding:"required"`
-	LastName    string    `json:"last_name" binding:"required"`
-	DOB         time.Time `json:"dob" binding:"required"`
-	Nationality string    `json:"nationality" binding:"required"`
+	ID          uint           `gorm:"primaryKey" json:"id"`
+	BookingID   uint           `json:"booking_id"`
+	Title       string         `json:"title" binding:"required"`
+	FirstName   string         `json:"first_name" binding:"required"`
+	LastName    string         `json:"last_name" binding:"required"`
+	DOB         time.Time      `json:"dob" binding:"required"`
+	Nationality string         `json:"nationality" binding:"required"`
+	DeletedAt   gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
 }
 
 type Booking struct {
 	gorm.Model
-	UserID      uint `json:"user_id"`
-	User        User `json:"user,omitempty"`
-	FlightID    uint `json:"flight_id"`
-	Flight      Flight
-	BookingDate time.Time   `json:"booking_date"`
-	Status      string      `json:"status"`
-	Seats       int         `json:"seats"`
-	IsPremium   bool        `json:"is_premium"`
-	TotalPrice  float64     `json:"total_price"`
-	TravelClass string      `json:"travel_class" binding:"required,oneof=Economy PremiumEconomy Business FirstClass"`
-	Travellers  []Traveller `json:"travellers" gorm:"constraint:OnDelete:CASCADE;"`
+	UserID           uint `json:"user_id"`
+	User             User `json:"user,omitempty"`
+	FlightID         uint `json:"flight_id"`
+	Flight           Flight
+	BookingDate      time.Time   `json:"booking_date"`
+	Status           string      `json:"status"`
+	Seats            int         `json:"seats"`
+	IsPremium        bool        `json:"is_premium"`
+	TotalPrice       float64     `json:"total_price"`
+	TravelClass      string      `json:"travel_class" binding:"required,oneof=Economy PremiumEconomy Business FirstClass"`
+	Travellers       []Traveller `json:"travellers" gorm:"constraint:OnDelete:CASCADE;"`
+	RefundAmount     float64     `json:"refund_amount"`
+	CancellationDate *time.Time  `json:"cancellation_date"`
 }

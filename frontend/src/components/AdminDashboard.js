@@ -24,6 +24,9 @@ import {
   Select,
   MenuItem,
   Snackbar,
+  Checkbox,
+  FormControlLabel,
+  IconButton,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
@@ -31,6 +34,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import FilterListIcon from '@mui/icons-material/FilterList';
 
 function AdminDashboard() {
   const [flights, setFlights] = useState([]);
@@ -45,6 +49,9 @@ function AdminDashboard() {
   const [originOptions, setOriginOptions] = useState([]);
   const [destinationOptions, setDestinationOptions] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [total, setTotal] = useState(0);
 
   const [newFlight, setNewFlight] = useState({
     origin: '',
@@ -61,11 +68,28 @@ function AdminDashboard() {
     first_class_seats: '',
   });
 
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [flightToDelete, setFlightToDelete] = useState(null);
+
+  const [filterDialogOpen, setFilterDialogOpen] = useState(false);
+  const [filterFlightNumber, setFilterFlightNumber] = useState('');
+  const [filterMinFlightNumber, setFilterMinFlightNumber] = useState('');
+  const [filterMaxFlightNumber, setFilterMaxFlightNumber] = useState('');
+  const [filterMinPrice, setFilterMinPrice] = useState('');
+  const [filterMaxPrice, setFilterMaxPrice] = useState('');
+  const [filterMinSeats, setFilterMinSeats] = useState('');
+  const [filterMaxSeats, setFilterMaxSeats] = useState('');
+  const [filterDepartureFrom, setFilterDepartureFrom] = useState(null);
+  const [filterDepartureTo, setFilterDepartureTo] = useState(null);
+  const [filterArrivalFrom, setFilterArrivalFrom] = useState(null);
+  const [filterArrivalTo, setFilterArrivalTo] = useState(null);
+  const [filterTravelClass, setFilterTravelClass] = useState('');
+
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchFlights();
-  }, [showAllFlights]);
+  }, [showAllFlights, page]);
 
   useEffect(() => {
     const fetchLocations = async () => {
@@ -88,24 +112,35 @@ function AdminDashboard() {
       const token = localStorage.getItem('token');
       let url = `${API_BASE_URL}/flights`;
       const query = new URLSearchParams();
-
       if (showAllFlights) {
         query.append('all_flights', 'true');
+      } else {
+        query.append('page', page);
+        query.append('limit', limit);
       }
-
       if (filterOrigin) query.append('origin', filterOrigin);
       if (filterDestination) query.append('destination', filterDestination);
       if (filterStatus) query.append('status', filterStatus);
       if (filterDate) query.append('departure_date', format(filterDate, 'yyyy-MM-dd'));
-
+      if (filterMinFlightNumber) query.append('min_flight_id', filterMinFlightNumber);
+      if (filterMaxFlightNumber) query.append('max_flight_id', filterMaxFlightNumber);
+      if (filterMinPrice) query.append('min_economy_price', filterMinPrice);
+      if (filterMaxPrice) query.append('max_economy_price', filterMaxPrice);
+      if (filterMinSeats) query.append('min_economy_seats', filterMinSeats);
+      if (filterMaxSeats) query.append('max_economy_seats', filterMaxSeats);
+      if (filterDepartureFrom) query.append('departure_from', format(filterDepartureFrom, 'yyyy-MM-dd HH:mm'));
+      if (filterDepartureTo) query.append('departure_to', format(filterDepartureTo, 'yyyy-MM-dd HH:mm'));
+      if (filterArrivalFrom) query.append('arrival_from', format(filterArrivalFrom, 'yyyy-MM-dd HH:mm'));
+      if (filterArrivalTo) query.append('arrival_to', format(filterArrivalTo, 'yyyy-MM-dd HH:mm'));
+      if (filterTravelClass) query.append('travel_class', filterTravelClass);
       if (query.toString()) {
         url = `${url}?${query.toString()}`;
       }
-
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setFlights(response.data.data);
+      setTotal(response.data.meta?.total || 0);
     } catch (error) {
       setError('Failed to fetch flights');
     }
@@ -235,6 +270,8 @@ function AdminDashboard() {
     'Visakhapatnam', 'Pimpri-Chinchwad', 'Patna', 'Vadodara', 'Ghaziabad'
   ];
 
+  const totalPages = Math.ceil(total / limit);
+
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Container maxWidth="lg" sx={{ mt: 4 }}>
@@ -249,82 +286,15 @@ function AdminDashboard() {
             >
               Add New Flight
             </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => setShowAllFlights(!showAllFlights)}
-            >
-              {showAllFlights ? 'Show Paginated Flights' : 'Show All Flights'}
-            </Button>
+            <FormControlLabel
+              control={<Checkbox checked={showAllFlights} onChange={e => { setShowAllFlights(e.target.checked); setPage(1); }} />}
+              label="Show All Flights"
+              sx={{ mr: 2 }}
+            />
+            <IconButton color="primary" onClick={() => setFilterDialogOpen(true)}>
+              <FilterListIcon />
+            </IconButton>
           </Box>
-        </Box>
-
-        <Box mb={3} display="flex" gap={2} alignItems="center">
-          <FormControl size="small" sx={{ minWidth: 120 }}>
-            <InputLabel>Filter by Origin</InputLabel>
-            <Select
-              value={filterOrigin}
-              label="Filter by Origin"
-              onChange={(e) => setFilterOrigin(e.target.value)}
-            >
-              <MenuItem value="">All</MenuItem>
-              {originOptions.map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl size="small" sx={{ minWidth: 120 }}>
-            <InputLabel>Filter by Destination</InputLabel>
-            <Select
-              value={filterDestination}
-              label="Filter by Destination"
-              onChange={(e) => setFilterDestination(e.target.value)}
-            >
-              <MenuItem value="">All</MenuItem>
-              {destinationOptions.map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl size="small" sx={{ minWidth: 120 }}>
-            <InputLabel>Status</InputLabel>
-            <Select
-              value={filterStatus}
-              label="Status"
-              onChange={(e) => setFilterStatus(e.target.value)}
-            >
-              <MenuItem value="">All</MenuItem>
-              <MenuItem value="Scheduled">Scheduled</MenuItem>
-              <MenuItem value="In Air">In Air</MenuItem>
-              <MenuItem value="Landed">Landed</MenuItem>
-              <MenuItem value="Departing Soon">Departing Soon</MenuItem>
-            </Select>
-          </FormControl>
-
-          <DatePicker
-            label="Filter by Date"
-            value={filterDate}
-            onChange={(newValue) => setFilterDate(newValue)}
-            renderInput={(params) => <TextField {...params} size="small" sx={{ width: 200 }} />}
-            inputFormat="yyyy-MM-dd"
-          />
-
-          <Button
-            variant="contained"
-            onClick={() => fetchFlights()}
-          >
-            Apply Filters
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={handleClearFilters}
-          >
-            Clear Filters
-          </Button>
         </Box>
 
         <Snackbar
@@ -383,9 +353,10 @@ function AdminDashboard() {
                       <Button
                         variant="contained"
                         color="error"
-                        onClick={(e) => {
+                        onClick={e => {
                           e.stopPropagation();
-                          handleDeleteFlight(flight.ID);
+                          setFlightToDelete(flight);
+                          setDeleteDialogOpen(true);
                         }}
                       >
                         Delete
@@ -397,6 +368,28 @@ function AdminDashboard() {
             </TableBody>
           </Table>
         </TableContainer>
+
+        {!showAllFlights && (
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 2 }}>
+            <Button onClick={() => setPage(page - 1)} disabled={page === 1} sx={{ mr: 2 }}>Previous</Button>
+            <span>Page</span>
+            <TextField
+              type="number"
+              value={page}
+              onChange={e => {
+                let val = parseInt(e.target.value) || 1;
+                if (val < 1) val = 1;
+                if (val > totalPages) val = totalPages;
+                setPage(val);
+              }}
+              size="small"
+              sx={{ width: 60, mx: 1 }}
+              inputProps={{ min: 1, max: totalPages }}
+            />
+            <span>of {totalPages}</span>
+            <Button onClick={() => setPage(page + 1)} disabled={page === totalPages} sx={{ ml: 2 }}>Next</Button>
+          </Box>
+        )}
 
         <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
           <DialogTitle>Add New Flight</DialogTitle>
@@ -531,6 +524,200 @@ function AdminDashboard() {
             <Button onClick={handleAddFlight} variant="contained" color="primary">
               Add Flight
             </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+          <DialogTitle>Confirm Delete Flight</DialogTitle>
+          <DialogContent>
+            {flightToDelete && (
+              <>
+                <Typography variant="subtitle1">Flight Number: {flightToDelete.ID}</Typography>
+                <Typography variant="body2">Route: {flightToDelete.origin} → {flightToDelete.destination}</Typography>
+                <Typography variant="body2">Departure: {format(new Date(flightToDelete.departure_time), 'dd/MM/yyyy HH:mm')}</Typography>
+                <Typography variant="body2">Arrival: {format(new Date(flightToDelete.arrival_time), 'dd/MM/yyyy HH:mm')}</Typography>
+              </>
+            )}
+            <Typography sx={{ mt: 2 }}>Are you sure you want to delete this flight?</Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
+            <Button color="error" variant="contained" onClick={() => {
+              handleDeleteFlight(flightToDelete.ID);
+              setDeleteDialogOpen(false);
+            }}>Delete</Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog open={filterDialogOpen} onClose={() => setFilterDialogOpen(false)}>
+          <DialogTitle>Filter Flights</DialogTitle>
+          <DialogContent>
+            <Box display="flex" gap={2} mb={2}>
+              <TextField
+                label="Min Flight Number"
+                value={filterMinFlightNumber}
+                onChange={e => setFilterMinFlightNumber(e.target.value)}
+                type="number"
+                fullWidth
+              />
+              <TextField
+                label="Max Flight Number"
+                value={filterMaxFlightNumber}
+                onChange={e => setFilterMaxFlightNumber(e.target.value)}
+                type="number"
+                fullWidth
+              />
+            </Box>
+            <Box display="flex" gap={2} mb={2}>
+              <TextField
+                label="Min Economy Price"
+                value={filterMinPrice}
+                onChange={e => setFilterMinPrice(e.target.value)}
+                type="number"
+                fullWidth
+              />
+              <TextField
+                label="Max Economy Price"
+                value={filterMaxPrice}
+                onChange={e => setFilterMaxPrice(e.target.value)}
+                type="number"
+                fullWidth
+              />
+            </Box>
+            <Box display="flex" gap={2} mb={2}>
+              <TextField
+                label="Min Economy Seats"
+                value={filterMinSeats}
+                onChange={e => setFilterMinSeats(e.target.value)}
+                type="number"
+                fullWidth
+              />
+              <TextField
+                label="Max Economy Seats"
+                value={filterMaxSeats}
+                onChange={e => setFilterMaxSeats(e.target.value)}
+                type="number"
+                fullWidth
+              />
+            </Box>
+            <Box display="flex" gap={2} mb={2}>
+              <DatePicker
+                label="Departure From"
+                value={filterDepartureFrom}
+                onChange={setFilterDepartureFrom}
+                renderInput={params => <TextField {...params} fullWidth />}
+                inputFormat="yyyy-MM-dd HH:mm"
+              />
+              <DatePicker
+                label="Departure To"
+                value={filterDepartureTo}
+                onChange={setFilterDepartureTo}
+                renderInput={params => <TextField {...params} fullWidth />}
+                inputFormat="yyyy-MM-dd HH:mm"
+              />
+            </Box>
+            <Box display="flex" gap={2} mb={2}>
+              <DatePicker
+                label="Arrival From"
+                value={filterArrivalFrom}
+                onChange={setFilterArrivalFrom}
+                renderInput={params => <TextField {...params} fullWidth />}
+                inputFormat="yyyy-MM-dd HH:mm"
+              />
+              <DatePicker
+                label="Arrival To"
+                value={filterArrivalTo}
+                onChange={setFilterArrivalTo}
+                renderInput={params => <TextField {...params} fullWidth />}
+                inputFormat="yyyy-MM-dd HH:mm"
+              />
+            </Box>
+            <FormControl size="small" sx={{ minWidth: 120, mb: 2 }} fullWidth>
+              <InputLabel>Travel Class</InputLabel>
+              <Select
+                value={filterTravelClass}
+                label="Travel Class"
+                onChange={e => setFilterTravelClass(e.target.value)}
+              >
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="Economy">Economy</MenuItem>
+                <MenuItem value="PremiumEconomy">Premium Economy</MenuItem>
+                <MenuItem value="Business">Business</MenuItem>
+                <MenuItem value="FirstClass">First Class</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl size="small" sx={{ minWidth: 120, mb: 2 }} fullWidth>
+              <InputLabel>Filter by Origin</InputLabel>
+              <Select
+                value={filterOrigin}
+                label="Filter by Origin"
+                onChange={(e) => setFilterOrigin(e.target.value)}
+              >
+                <MenuItem value="">All</MenuItem>
+                {originOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl size="small" sx={{ minWidth: 120, mb: 2 }} fullWidth>
+              <InputLabel>Filter by Destination</InputLabel>
+              <Select
+                value={filterDestination}
+                label="Filter by Destination"
+                onChange={(e) => setFilterDestination(e.target.value)}
+              >
+                <MenuItem value="">All</MenuItem>
+                {destinationOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl size="small" sx={{ minWidth: 120, mb: 2 }} fullWidth>
+              <InputLabel>Status</InputLabel>
+              <Select
+                value={filterStatus}
+                label="Status"
+                onChange={(e) => setFilterStatus(e.target.value)}
+              >
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="Scheduled">Scheduled</MenuItem>
+                <MenuItem value="In Air">In Air</MenuItem>
+                <MenuItem value="Landed">Landed</MenuItem>
+                <MenuItem value="Departing Soon">Departing Soon</MenuItem>
+              </Select>
+            </FormControl>
+            <DatePicker
+              label="Filter by Date"
+              value={filterDate}
+              onChange={(newValue) => setFilterDate(newValue)}
+              renderInput={(params) => <TextField {...params} size="small" sx={{ width: '100%', mb: 2 }} />}
+              inputFormat="yyyy-MM-dd"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="contained"
+              onClick={() => {
+                fetchFlights();
+                setFilterDialogOpen(false);
+              }}
+            >
+              Apply Filters
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                handleClearFilters();
+                setFilterDialogOpen(false);
+              }}
+            >
+              Clear Filters
+            </Button>
+            <Button onClick={() => setFilterDialogOpen(false)}>Close</Button>
           </DialogActions>
         </Dialog>
       </Container>

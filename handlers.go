@@ -370,6 +370,7 @@ func getFlightsHandler(c *gin.Context) {
 
 func createBookingHandler(c *gin.Context) {
 	userID, _ := c.Get("user_id")
+	log.Printf("[DEBUG] createBookingHandler called by user_id: %v", userID)
 
 	var input CreateBookingInput
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -475,12 +476,14 @@ func createBookingHandler(c *gin.Context) {
 			TotalPrice:  totalPrice,
 			TravelClass: input.TravelClass,
 		}
+		log.Printf("[DEBUG] Creating booking: %+v", booking)
 
 		if err := tx.Create(&booking).Error; err != nil {
 			return err
 		}
 
 		// Save travellers
+		var createdTravellers []Traveller
 		for _, t := range input.Travellers {
 			trav := Traveller{
 				BookingID:   booking.ID,
@@ -493,7 +496,9 @@ func createBookingHandler(c *gin.Context) {
 			if err := tx.Create(&trav).Error; err != nil {
 				return err
 			}
+			createdTravellers = append(createdTravellers, trav)
 		}
+		booking.Travellers = createdTravellers
 
 		// Update flight seats
 		if err := tx.Save(&flight).Error; err != nil {
@@ -504,7 +509,7 @@ func createBookingHandler(c *gin.Context) {
 	})
 
 	if err != nil {
-		log.Printf("Failed to create booking: %v", err)
+		log.Printf("[ERROR] Failed to create booking for user_id %v: %v", userID, err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create booking: " + err.Error()})
 		return
 	}
@@ -518,6 +523,7 @@ func createBookingHandler(c *gin.Context) {
 
 func getBookingsHandler(c *gin.Context) {
 	userID, _ := c.Get("user_id")
+	log.Printf("[DEBUG] getBookingsHandler called by user_id: %v", userID)
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
 	offset := (page - 1) * limit
@@ -531,11 +537,13 @@ func getBookingsHandler(c *gin.Context) {
 		return
 	}
 
-	if err := db.Preload("Flight").Offset(offset).Limit(limit).Where("user_id = ?", userID).Find(&bookings).Error; err != nil {
+	if err := db.Preload("Flight").Preload("Travellers", "deleted_at IS NULL").Where("user_id = ?", userID).Order("id DESC").Offset(offset).Limit(limit).Find(&bookings).Error; err != nil {
 		log.Printf("Failed to fetch bookings: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch bookings"})
 		return
 	}
+
+	log.Printf("[DEBUG] Bookings fetched for user_id %v: %+v", userID, bookings)
 
 	c.JSON(http.StatusOK, gin.H{
 		"data": bookings,
@@ -551,37 +559,119 @@ func getBookingsHandler(c *gin.Context) {
 func deleteBookingHandler(c *gin.Context) {
 	id := c.Param("id")
 
+	var req struct {
+		TravellerIDs []uint `json:"traveller_ids"`
+	}
+	_ = c.ShouldBindJSON(&req)
+
 	err := db.Transaction(func(tx *gorm.DB) error {
 		var booking Booking
-		if err := tx.First(&booking, id).Error; err != nil {
+		if err := tx.Preload("Travellers").First(&booking, id).Error; err != nil {
 			return fmt.Errorf("booking not found")
 		}
 
-		// Restore seats to the flight
+		if booking.Status == "Cancelled" {
+			return fmt.Errorf("booking already cancelled")
+		}
+
+		if len(req.TravellerIDs) == 0 || len(req.TravellerIDs) == len(booking.Travellers) {
+			// Cancel whole booking (as before)
+			cancellationFee := 0.10 * booking.TotalPrice
+			refundAmount := booking.TotalPrice - cancellationFee
+			booking.Status = "Cancelled"
+			booking.RefundAmount = refundAmount
+			now := time.Now()
+			booking.CancellationDate = &now
+
+			// Restore all seats
+			var flight Flight
+			if err := tx.First(&flight, booking.FlightID).Error; err != nil {
+				return fmt.Errorf("flight not found")
+			}
+			switch booking.TravelClass {
+			case "Economy":
+				flight.EconomySeats += booking.Seats
+			case "PremiumEconomy":
+				flight.PremiumEconomySeats += booking.Seats
+			case "Business":
+				flight.BusinessSeats += booking.Seats
+			case "FirstClass":
+				flight.FirstClassSeats += booking.Seats
+			}
+			if err := tx.Save(&flight).Error; err != nil {
+				return fmt.Errorf("failed to restore seats to flight")
+			}
+			if err := tx.Save(&booking).Error; err != nil {
+				return fmt.Errorf("failed to update booking status")
+			}
+			return nil
+		}
+
+		// Partial cancellation
+		// Find the travellers to cancel
+		var toCancel []Traveller
+		for _, t := range booking.Travellers {
+			for _, id := range req.TravellerIDs {
+				if t.ID == id {
+					toCancel = append(toCancel, t)
+				}
+			}
+		}
+		if len(toCancel) == 0 {
+			return fmt.Errorf("no valid travellers selected for cancellation")
+		}
+
+		seatsToCancel := len(toCancel)
+		// Remove those travellers
+		if err := tx.Where("id IN ?", req.TravellerIDs).Delete(&Traveller{}).Error; err != nil {
+			return fmt.Errorf("failed to remove travellers")
+		}
+		// Update seats to the number of remaining travellers
+		var remainingTravellers int64
+		tx.Model(&Traveller{}).Where("booking_id = ?", booking.ID).Count(&remainingTravellers)
+		booking.Seats = int(remainingTravellers)
+
+		// Restore seats to flight
 		var flight Flight
 		if err := tx.First(&flight, booking.FlightID).Error; err != nil {
 			return fmt.Errorf("flight not found")
 		}
-
 		switch booking.TravelClass {
 		case "Economy":
-			flight.EconomySeats += booking.Seats
+			flight.EconomySeats += seatsToCancel
 		case "PremiumEconomy":
-			flight.PremiumEconomySeats += booking.Seats
+			flight.PremiumEconomySeats += seatsToCancel
 		case "Business":
-			flight.BusinessSeats += booking.Seats
+			flight.BusinessSeats += seatsToCancel
 		case "FirstClass":
-			flight.FirstClassSeats += booking.Seats
+			flight.FirstClassSeats += seatsToCancel
 		}
-
 		if err := tx.Save(&flight).Error; err != nil {
 			return fmt.Errorf("failed to restore seats to flight")
 		}
 
-		if err := tx.Delete(&booking).Error; err != nil {
-			return fmt.Errorf("failed to delete booking")
-		}
+		// Calculate fee/refund for cancelled seats
+		perSeatPrice := booking.TotalPrice / float64(booking.Seats+seatsToCancel) // original seats
+		cancelledTotal := perSeatPrice * float64(seatsToCancel)
+		fee := 0.10 * cancelledTotal
+		refund := cancelledTotal - fee
 
+		// Optionally, keep a record/log of partial cancellation (not shown here)
+
+		// Update booking price for remaining seats
+		booking.TotalPrice -= cancelledTotal
+		if booking.Seats == 0 {
+			booking.Status = "Cancelled"
+			now := time.Now()
+			booking.CancellationDate = &now
+			booking.RefundAmount += refund
+		} else {
+			// For partial, accumulate the refund amount
+			booking.RefundAmount += refund
+		}
+		if err := tx.Save(&booking).Error; err != nil {
+			return fmt.Errorf("failed to update booking after partial cancellation")
+		}
 		return nil
 	})
 
@@ -590,7 +680,10 @@ func deleteBookingHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Booking deleted successfully and seats restored"})
+	// Return updated booking info
+	var updated Booking
+	db.Preload("Flight").Preload("Travellers", "deleted_at IS NULL").First(&updated, id)
+	c.JSON(http.StatusOK, gin.H{"message": "Booking cancelled successfully", "booking": updated})
 }
 
 func updateBookingHandler(c *gin.Context) {

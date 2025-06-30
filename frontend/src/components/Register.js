@@ -19,6 +19,7 @@ function Register() {
     name: '',
   });
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -33,14 +34,17 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setIsSubmitting(true);
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
+      setIsSubmitting(false);
       return;
     }
 
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters long');
+      setIsSubmitting(false);
       return;
     }
 
@@ -49,6 +53,7 @@ function Register() {
       navigate('/login');
     } else {
       setError(result.error);
+      setIsSubmitting(false);
     }
   };
 
@@ -113,8 +118,9 @@ function Register() {
               fullWidth
               size="large"
               sx={{ mt: 3 }}
+              disabled={isSubmitting}
             >
-              Register
+              {isSubmitting ? 'Registering...' : 'Register'}
             </Button>
           </form>
 
