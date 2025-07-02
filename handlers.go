@@ -167,6 +167,8 @@ func createFlightHandler(c *gin.Context) {
 
 	log.Printf("Attempting to create flight: %+v", flight) // Log the flight object received
 
+	flight.ID = 0 // Ensure the ID is zeroed so the DB auto-generates it
+
 	if err := db.Create(&flight).Error; err != nil {
 		log.Printf("Error creating flight in DB: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create flight"})
