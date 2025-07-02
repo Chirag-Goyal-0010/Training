@@ -253,16 +253,25 @@ function UserDashboard() {
                     )}
                   </TableCell>
                   <TableCell>
-                    {booking.status === 'Confirmed' && (
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        size="small"
-                        onClick={() => openConfirmDialog(booking.ID)}
-                      >
-                        Cancel
-                      </Button>
-                    )}
+                    {booking.status === 'Confirmed' && (() => {
+                      const departure = booking.Flight?.departure_time ? new Date(booking.Flight.departure_time) : null;
+                      const now = new Date();
+                      const twoHoursMs = 2 * 60 * 60 * 1000;
+                      if (departure && (departure.getTime() - now.getTime() > twoHoursMs)) {
+                        return (
+                          <Button
+                            variant="outlined"
+                            color="error"
+                            size="small"
+                            onClick={() => openConfirmDialog(booking.ID)}
+                          >
+                            Cancel
+                          </Button>
+                        );
+                      } else {
+                        return null;
+                      }
+                    })()}
                   </TableCell>
                 </TableRow>
               )})}

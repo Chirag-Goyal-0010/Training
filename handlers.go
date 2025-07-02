@@ -179,12 +179,38 @@ func createFlightHandler(c *gin.Context) {
 func deleteFlightHandler(c *gin.Context) {
 	id := c.Param("id")
 
-	if err := db.Delete(&Flight{}, id).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete flight"})
+	err := db.Transaction(func(tx *gorm.DB) error {
+		// Find all bookings for this flight
+		var bookings []Booking
+		if err := tx.Where("flight_id = ?", id).Find(&bookings).Error; err != nil {
+			return err
+		}
+		for _, booking := range bookings {
+			if booking.Status != "Cancelled" && booking.Status != "Flight Cancelled" {
+				compensation := 0.30 * booking.TotalPrice
+				refund := booking.TotalPrice + compensation
+				booking.Status = "Flight Cancelled"
+				booking.RefundAmount = refund
+				now := time.Now()
+				booking.CancellationDate = &now
+				if err := tx.Save(&booking).Error; err != nil {
+					return err
+				}
+			}
+		}
+		// Delete the flight
+		if err := tx.Delete(&Flight{}, id).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete flight and update bookings"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Flight deleted successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "Flight deleted successfully and affected bookings updated"})
 }
 
 // getFlightHandler fetches a single flight by its ID
@@ -317,24 +343,23 @@ func getFlightsHandler(c *gin.Context) {
 		dbQuery = dbQuery.Where("departure_time > NOW() AT TIME ZONE 'UTC'")
 	}
 
-	// Order by ID in descending order to show newest flights first
-	if allFlights == "true" {
-		if err := dbQuery.Order("id DESC").Find(&flights).Error; err != nil {
-			log.Printf("Failed to fetch all flights: %v", err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch all flights"})
-			return
-		}
-	} else {
-		if err := dbQuery.Offset(offset).Limit(limit).Order("id DESC").Find(&flights).Error; err != nil {
-			log.Printf("Failed to fetch flights: %v", err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch flights"})
-			return
-		}
+	// SQL-side global sorting by status before pagination
+	orderExpr := `
+		CASE
+			WHEN departure_time < NOW() AT TIME ZONE 'UTC' AND arrival_time > NOW() AT TIME ZONE 'UTC' THEN 0
+			WHEN departure_time > NOW() AT TIME ZONE 'UTC' AND (departure_time - NOW() AT TIME ZONE 'UTC') <= INTERVAL '10 minutes' THEN 1
+			WHEN arrival_time < NOW() AT TIME ZONE 'UTC' THEN 3
+			ELSE 2
+		END
+	`
+	if err := dbQuery.Order(orderExpr).Order("id DESC").Offset(offset).Limit(limit).Find(&flights).Error; err != nil {
+		log.Printf("Failed to fetch flights: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch flights"})
+		return
 	}
 
-	travelClass := c.Query("travel_class")
-
 	// Calculate total available seats and set economy price as default price for frontend display
+	travelClass := c.Query("travel_class")
 	for i := range flights {
 		switch travelClass {
 		case "Economy":

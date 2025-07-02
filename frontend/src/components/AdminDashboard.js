@@ -112,12 +112,9 @@ function AdminDashboard() {
       const token = localStorage.getItem('token');
       let url = `${API_BASE_URL}/flights`;
       const query = new URLSearchParams();
-      if (showAllFlights) {
-        query.append('all_flights', 'true');
-      } else {
-        query.append('page', page);
-        query.append('limit', limit);
-      }
+      query.append('all_flights', 'true');
+      query.append('page', page);
+      query.append('limit', limit);
       if (filterOrigin) query.append('origin', filterOrigin);
       if (filterDestination) query.append('destination', filterDestination);
       if (filterStatus) query.append('status', filterStatus);
@@ -324,47 +321,58 @@ function AdminDashboard() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {flights.map((flight) => {
-                let status = 'Scheduled';
-                if (flight.is_in_air) {
-                  status = 'In Air';
-                } else if (flight.is_landed) {
-                  status = 'Landed';
-                } else if (flight.is_departing_soon) {
-                  status = 'Departing Soon';
-                }
-                return (
-                  <TableRow
-                    key={flight.ID}
-                    hover
-                    sx={{ cursor: 'pointer' }}
-                    onClick={() => navigate(`/admin/flights/${flight.ID}`)}
-                  >
-                    <TableCell>{flight.ID}</TableCell>
-                    <TableCell>{flight.origin} → {flight.destination}</TableCell>
-                    <TableCell>
-                      {format(new Date(flight.departure_time), 'dd/MM/yyyy HH:mm')}
-                    </TableCell>
-                    <TableCell>
-                      {format(new Date(flight.arrival_time), 'dd/MM/yyyy HH:mm')}
-                    </TableCell>
-                    <TableCell>{status}</TableCell>
-                    <TableCell>
-                      <Button
-                        variant="contained"
-                        color="error"
-                        onClick={e => {
-                          e.stopPropagation();
-                          setFlightToDelete(flight);
-                          setDeleteDialogOpen(true);
-                        }}
-                      >
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+              {flights
+                .slice()
+                .sort((a, b) => {
+                  const getOrder = (flight) => {
+                    if (flight.is_in_air) return 0;
+                    if (flight.is_departing_soon) return 1;
+                    if (flight.is_landed) return 3;
+                    return 2;
+                  };
+                  return getOrder(a) - getOrder(b);
+                })
+                .map((flight) => {
+                  let status = 'Scheduled';
+                  if (flight.is_in_air) {
+                    status = 'In Air';
+                  } else if (flight.is_landed) {
+                    status = 'Landed';
+                  } else if (flight.is_departing_soon) {
+                    status = 'Departing Soon';
+                  }
+                  return (
+                    <TableRow
+                      key={flight.ID}
+                      hover
+                      sx={{ cursor: 'pointer' }}
+                      onClick={() => navigate(`/admin/flights/${flight.ID}`)}
+                    >
+                      <TableCell>{flight.ID}</TableCell>
+                      <TableCell>{flight.origin} → {flight.destination}</TableCell>
+                      <TableCell>
+                        {format(new Date(flight.departure_time), 'dd/MM/yyyy HH:mm')}
+                      </TableCell>
+                      <TableCell>
+                        {format(new Date(flight.arrival_time), 'dd/MM/yyyy HH:mm')}
+                      </TableCell>
+                      <TableCell>{status}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          onClick={e => {
+                            e.stopPropagation();
+                            setFlightToDelete(flight);
+                            setDeleteDialogOpen(true);
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           </Table>
         </TableContainer>

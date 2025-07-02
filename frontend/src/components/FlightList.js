@@ -42,6 +42,8 @@ const FlightList = ({ searchParams }) => {
   const [limit, setLimit] = useState(10);
   const [total, setTotal] = useState(0);
   const [showAll, setShowAll] = useState(false);
+  const [showSurchargeDialog, setShowSurchargeDialog] = useState(false);
+  const [pendingBooking, setPendingBooking] = useState(false);
 
   useEffect(() => {
     fetchFlights();
@@ -150,13 +152,19 @@ const FlightList = ({ searchParams }) => {
       setBookingError('Please fill all traveller details.');
       return;
     }
+    // If premium surcharge applies, show confirmation dialog first
+    if (isPremiumBooking && !pendingBooking) {
+      setShowSurchargeDialog(true);
+      setPendingBooking(true);
+      return;
+    }
+    setPendingBooking(false);
     try {
       const token = localStorage.getItem('token');
       if (!token) {
         setBookingError('Please login to book flights');
         return;
       }
-
       await axios.post(
         `${API_BASE_URL}/bookings`,
         {
@@ -171,7 +179,6 @@ const FlightList = ({ searchParams }) => {
           },
         }
       );
-
       setOpen(false);
       setSeats(1);
       setTravelClass('Economy');
@@ -240,7 +247,30 @@ const FlightList = ({ searchParams }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {flights.map((flight) => (
+            {(flights
+              .filter(flight => {
+                const travellers = searchParams?.travellers ? parseInt(searchParams.travellers) : 1;
+                const travelClass = searchParams?.travelClass || 'Economy';
+                let availableSeats = 0;
+                switch (travelClass) {
+                  case 'Economy':
+                    availableSeats = flight.economy_seats;
+                    break;
+                  case 'PremiumEconomy':
+                    availableSeats = flight.premium_economy_seats;
+                    break;
+                  case 'Business':
+                    availableSeats = flight.business_seats;
+                    break;
+                  case 'FirstClass':
+                    availableSeats = flight.first_class_seats;
+                    break;
+                  default:
+                    availableSeats = flight.economy_seats;
+                }
+                return availableSeats >= travellers;
+              })
+            ).map((flight) => (
               <TableRow key={flight.ID}>
                 <TableCell>{flight.ID}</TableCell>
                 <TableCell>{flight.origin}</TableCell>
@@ -419,6 +449,25 @@ const FlightList = ({ searchParams }) => {
           <Button onClick={handleBooking} variant="contained" color="primary">
             Confirm Booking
           </Button>
+        </DialogActions>
+      </Dialog>
+      {/* Surcharge confirmation dialog */}
+      <Dialog open={showSurchargeDialog} onClose={() => { setShowSurchargeDialog(false); setPendingBooking(false); }}>
+        <DialogTitle>Premium Surcharge Notice</DialogTitle>
+        <DialogContent>
+          <Typography gutterBottom>
+            A 30% premium charge is being applied to your booking because it is a last-minute booking (within 15-60 minutes of departure).
+          </Typography>
+          <Typography gutterBottom>
+            Total Price: ₹{displayTotalPrice.toFixed(2)}
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            Do you want to proceed with this booking?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => { setShowSurchargeDialog(false); setPendingBooking(false); }}>Cancel</Button>
+          <Button onClick={() => { setShowSurchargeDialog(false); handleBooking(); }} variant="contained" color="primary">Confirm</Button>
         </DialogActions>
       </Dialog>
     </Container>
