@@ -518,6 +518,7 @@ func createBookingHandler(c *gin.Context) {
 				DOB:         t.DOB,
 				Nationality: t.Nationality,
 			}
+			log.Printf("[DEBUG] Creating traveller: %+v", trav)
 			if err := tx.Create(&trav).Error; err != nil {
 				return err
 			}
